@@ -1,16 +1,18 @@
+# language: rust
+# rust:
+#   - nightly
+# matrix:
+#   allow_failures:
+#     - rust: nightly
+#   fast_finish: true
+# cache: cargo
+
+
+# services:
+# - docker
+# before_install:
+
 language: rust
-rust:
-  - nightly
-matrix:
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
-cache: cargo
-
-
-services:
-- docker
-before_install:
 - docker pull target/consensource:build_agent
 - docker pull target/consensource:linter
 #- docker pull target/consensource:linter-nightly
