@@ -1,8 +1,19 @@
 language: rust
 rust:
   - nightly
+matrix:
+  allow_failures:
+    - rust: nightly
+  fast_finish: true
+cache: cargo
 
+
+services:
+- docker
+after_failure:
 - docker pull target/consensource:build_agent
 - docker pull target/consensource:linter
+#- docker pull target/consensource:linter-nightly
 - docker run -it -v $(pwd):/consensource target/consensource:linter /bin/sh -c "cd /consensource; cd cli && cargo fmt -- --check; cd ../common && cargo fmt -- --check; cd ../database && cargo fmt -- --check; cd ../processor && cargo fmt -- --check; cd ../state_delta_subscriber && cargo fmt -- --check; cd ..;"
-- docker run -it -v $(pwd):/consensource target/consensource:build_agent /bin/sh -c "cd /consensource; cd cli && cargo test; cd ../common && cargo test; cd ../database && cargo test; cd ../processor && cargo test; cd ../state_delta_subscriber && cargo test;"
+- docker run -it -v $(pwd):/consensource target/consensource:build_agent /bin/sh -c "cd /consensource; cd cli && cargo test; cd ../common && cargo test; cd ../database && cargo test; cd ../processor && cargo test; cd ../state_delta_subscriber && cargo test;" #cd ../rest_api && cargo test;"
+# - docker run -it -v $(pwd):/consensource target/consensource:linter-nightly /bin/sh -c "cd /consensource; cd rest_api && cargo fmt -- --check"
