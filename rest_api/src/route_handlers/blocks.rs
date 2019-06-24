@@ -5,7 +5,8 @@ use diesel::prelude::*;
 use errors::ApiError;
 use hyper_sse::Server;
 use paging::*;
-use rocket_contrib::{Json, Value};
+use rocket::request::Form;
+use rocket_contrib::json::JsonValue;
 use std::{thread, time};
 
 const DEFAULT_CHANNEL: u8 = 0;
@@ -133,16 +134,20 @@ fn start_sse_server(host: &str, port: u16) -> thread::JoinHandle<()> {
 }
 
 #[get("/blocks/<block_id>")]
-pub fn fetch_block(block_id: String, conn: DbConn) -> Result<Json<Value>, ApiError> {
-    fetch_block_with_head_param(block_id, Default::default(), conn)
+pub fn fetch_block(block_id: String, conn: DbConn) -> Result<JsonValue, ApiError> {
+    fetch_block_with_head_param(block_id, None, conn)
 }
 
-#[get("/blocks/<block_id>?<head_param>")]
+#[get("/blocks/<block_id>?<head_param..>")]
 pub fn fetch_block_with_head_param(
     block_id: String,
-    head_param: BlockParams,
+    head_param: Option<Form<BlockParams>>,
     conn: DbConn,
-) -> Result<Json<Value>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let head_param = match head_param {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
 
     let block = blocks::table
@@ -155,10 +160,10 @@ pub fn fetch_block_with_head_param(
     let link = format!("/api/blocks/{}", block_id);
 
     match block {
-        Some(block) => Ok(Json(json!({
+        Some(block) => Ok(json!({
                 "data": block,
                 "link": link,
-                "head": head_block_num, }))),
+                "head": head_block_num, })),
         None => Err(ApiError::NotFound(format!(
             "No block with the ID {} exists",
             block_id
@@ -174,12 +179,16 @@ pub struct BlockParams {
 }
 
 #[get("/blocks")]
-pub fn list_blocks(conn: DbConn) -> Result<Json<Value>, ApiError> {
-    list_blocks_with_params(Default::default(), conn)
+pub fn list_blocks(conn: DbConn) -> Result<JsonValue, ApiError> {
+    list_blocks_with_params(None, conn)
 }
 
-#[get("/blocks?<params>")]
-pub fn list_blocks_with_params(params: BlockParams, conn: DbConn) -> Result<Json<Value>, ApiError> {
+#[get("/blocks?<params..>")]
+pub fn list_blocks_with_params(params: Option<Form<BlockParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
     let mut blocks_query = blocks::table
@@ -202,13 +211,13 @@ pub fn list_blocks_with_params(params: BlockParams, conn: DbConn) -> Result<Json
         .load::<Block>(&*conn)
         .map_err(|err| ApiError::InternalError(err.to_string()))?;
 
-    Ok(Json(json!({ "data": blocks,
+    Ok(json!({ "data": blocks,
                     "link": paging_info.get("link"),
                     "head": head_block_num,
-                    "paging": paging_info.get("paging") })))
+                    "paging": paging_info.get("paging") }))
 }
 
-fn apply_paging(params: BlockParams, head: i64, total_count: i64) -> Result<Json<Value>, ApiError> {
+fn apply_paging(params: BlockParams, head: i64, total_count: i64) -> Result<JsonValue, ApiError> {
     let link = format!("/api/blocks?head={}&", head);
 
     get_response_paging_info(

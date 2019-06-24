@@ -2,37 +2,37 @@ use rocket::http::ContentType;
 use rocket::http::Status;
 use rocket::request::Request;
 use rocket::response::{Responder, Response};
-use rocket_contrib::{Json, Value};
+use rocket_contrib::json::JsonValue;
 use std::io::Cursor;
 
 #[catch(404)]
-pub fn not_found() -> Json<Value> {
-    Json(json!({
+pub fn not_found() -> JsonValue {
+    json!({
         "error": {
             "status": Status::NotFound.code,
             "message": "Not found"
         }
-    }))
+    })
 }
 
 #[catch(500)]
-pub fn internal_error() -> Json<Value> {
-    Json(json!({
+pub fn internal_error() -> JsonValue {
+    json!({
         "error": {
             "status": Status::InternalServerError.code,
             "message": "Internal error"
         }
-    }))
+    })
 }
 
 #[catch(503)]
-pub fn service_unavailable() -> Json<Value> {
-    Json(json!({
+pub fn service_unavailable() -> JsonValue {
+    json!({
         "error": {
             "status": Status::ServiceUnavailable.code,
             "message": "Service unavailable"
         }
-    }))
+    })
 }
 
 #[derive(Debug)]

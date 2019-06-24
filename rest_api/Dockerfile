@@ -7,7 +7,8 @@ WORKDIR /project/cert_registry
 COPY . .
 
 WORKDIR rest_api
-RUN rustup override set nightly-2018-12-05
+RUN rustup update nightly
+RUN rustup override set nightly
 RUN cargo build
 
 ENV PATH=$PATH:/project/cert_registry/rest_api/target/debug/

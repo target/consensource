@@ -5,7 +5,8 @@ use database_manager::tables_schema::{agents, organizations};
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
-use rocket_contrib::{Json, Value};
+use rocket::request::Form;
+use rocket_contrib::json::JsonValue;
 use std::collections::HashMap;
 
 #[derive(Serialize)]
@@ -46,16 +47,20 @@ impl ApiAgent {
 }
 
 #[get("/agents/<public_key>")]
-pub fn fetch_agent(public_key: String, conn: DbConn) -> Result<Json<Value>, ApiError> {
-    fetch_agent_with_head_param(public_key, Default::default(), conn)
+pub fn fetch_agent(public_key: String, conn: DbConn) -> Result<JsonValue, ApiError> {
+    fetch_agent_with_head_param(public_key, None, conn)
 }
 
-#[get("/agents/<public_key>?<head_param>")]
+#[get("/agents/<public_key>?<head_param..>")]
 pub fn fetch_agent_with_head_param(
     public_key: String,
-    head_param: AgentParams,
+    head_param: Option<Form<AgentParams>>,
     conn: DbConn,
-) -> Result<Json<Value>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let head_param = match head_param {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
 
     let agent = agents::table
@@ -82,10 +87,10 @@ pub fn fetch_agent_with_head_param(
                 };
 
             let link = format!("/api/agents/{}?head={}", public_key, head_block_num);
-            Ok(Json(json!({
+            Ok(json!({
                 "data": ApiAgent::with_org(&agent, &org),
                 "link": link,
-                "head": head_block_num, })))
+                "head": head_block_num, }))
         }
         None => Err(ApiError::NotFound(format!(
             "No agent with the public key {} exists",
@@ -102,12 +107,16 @@ pub struct AgentParams {
 }
 
 #[get("/agents")]
-pub fn list_agents(conn: DbConn) -> Result<Json<Value>, ApiError> {
-    list_agents_with_params(Default::default(), conn)
+pub fn list_agents(conn: DbConn) -> Result<JsonValue, ApiError> {
+    list_agents_with_params(None, conn)
 }
 
-#[get("/agents?<params>")]
-pub fn list_agents_with_params(params: AgentParams, conn: DbConn) -> Result<Json<Value>, ApiError> {
+#[get("/agents?<params..>")]
+pub fn list_agents_with_params(params: Option<Form<AgentParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
     let mut agents_query = agents::table
@@ -150,17 +159,17 @@ pub fn list_agents_with_params(params: AgentParams, conn: DbConn) -> Result<Json
             acc
         });
 
-    Ok(Json(json!({ "data": agent_results.iter().map(|agent| {
+    Ok(json!({ "data": agent_results.iter().map(|agent| {
         let org: Option<Organization> = agent.organization_id.as_ref()
             .and_then(|id| organization_results.remove(id));
         ApiAgent::with_org(agent, &org)
     }).collect::<Vec<_>>(),
                     "link": paging_info.get("link"),
                     "head": head_block_num,
-                    "paging": paging_info.get("paging") })))
+                    "paging": paging_info.get("paging") }))
 }
 
-fn apply_paging(params: AgentParams, head: i64, total_count: i64) -> Result<Json<Value>, ApiError> {
+fn apply_paging(params: AgentParams, head: i64, total_count: i64) -> Result<JsonValue, ApiError> {
     let link = format!("/api/agents?head={}&", head);
 
     get_response_paging_info(

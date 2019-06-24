@@ -1,5 +1,5 @@
 use bcrypt::{hash, verify, BcryptError, DEFAULT_COST};
-use rocket_contrib::{Json, Value};
+use rocket_contrib::json::{Json, JsonValue};
 
 use database::DbConn;
 use database_manager::models::User;
@@ -29,7 +29,7 @@ pub struct UserCreate {
 }
 
 #[post("/users", format = "application/json", data = "<payload>")]
-pub fn create_user(payload: Json<UserCreate>, conn: DbConn) -> Result<Json<Value>, ApiError> {
+pub fn create_user(payload: Json<UserCreate>, conn: DbConn) -> Result<JsonValue, ApiError> {
     let user_create = payload.0;
     if find_user_by_username(&conn, &user_create.username)?.is_some() {
         Err(ApiError::BadRequest(
@@ -46,7 +46,7 @@ pub fn create_user(payload: Json<UserCreate>, conn: DbConn) -> Result<Json<Value
         };
 
         save_user(&conn, user)?;
-        Ok(Json(json!({"status": "ok"})))
+        Ok(json!({"status": "ok"}))
     }
 }
 
@@ -67,7 +67,7 @@ pub fn update_user(
     payload: Json<UserUpdate>,
     public_key: String,
     conn: DbConn,
-) -> Result<Json<Value>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let user_update = payload.0;
     let updated_auth = UserUpdate {
         username: user_update.username,
@@ -79,7 +79,7 @@ pub fn update_user(
     if let Some(user) = find_user_by_pub_key(&conn, &public_key)? {
         if verify(&updated_auth.old_password, &user.hashed_password)? {
             save_password_change(&conn, updated_auth, public_key)?;
-            return Ok(Json(json!({"status": "ok"})));
+            return Ok(json!({"status": "ok"}));
         }
     }
 
@@ -98,16 +98,16 @@ pub struct UserAuthenticate {
 pub fn authenticate(
     payload: Json<UserAuthenticate>,
     conn: DbConn,
-) -> Result<Json<Value>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let user_auth = payload.0;
     if let Some(user) = find_user_by_username(&conn, &user_auth.username)? {
         if verify(&user_auth.password, &user.hashed_password)? {
-            return Ok(Json(json!({
+            return Ok(json!({
                 "status": "ok",
                 "username": user.username,
                 "public_key": user.public_key,
                 "encrypted_private_key": user.encrypted_private_key,
-            })));
+            }));
         }
     }
 
