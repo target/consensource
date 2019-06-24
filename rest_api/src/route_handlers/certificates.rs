@@ -4,7 +4,8 @@ use database_manager::tables_schema::{certificates, organizations, standards};
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket::request::Form;
+use rocket_contrib::json::JsonValue;
 
 #[derive(Serialize)]
 pub struct ApiCertificate {
@@ -45,16 +46,20 @@ impl From<(Certificate, Organization, Standard, Organization)> for ApiCertificat
 }
 
 #[get("/certificates/<certificate_id>")]
-pub fn fetch_certificate(certificate_id: String, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    fetch_certificate_with_head_param(certificate_id, Default::default(), conn)
+pub fn fetch_certificate(certificate_id: String, conn: DbConn) -> Result<JsonValue, ApiError> {
+    fetch_certificate_with_head_param(certificate_id, None, conn)
 }
 
-#[get("/certificates/<certificate_id>?<head_param>")]
+#[get("/certificates/<certificate_id>?<head_param..>")]
 pub fn fetch_certificate_with_head_param(
     certificate_id: String,
-    head_param: CertificateParams,
+    head_param: Option<Form<CertificateParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let head_param = match head_param {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
     let result: Option<Result<(Certificate, Organization, Standard, Organization), ApiError>> =
         certificates::table
@@ -100,10 +105,10 @@ pub fn fetch_certificate_with_head_param(
     );
 
     match result {
-        Some(cert_std_tuple) => Ok(Json(json!({
+        Some(cert_std_tuple) => Ok(json!({
                 "data": ApiCertificate::from(cert_std_tuple?),
                 "link": link,
-                "head": head_block_num, }))),
+                "head": head_block_num, })),
         None => Err(ApiError::NotFound(format!(
             "No certificate with the ID {} exists",
             certificate_id
@@ -121,15 +126,19 @@ pub struct CertificateParams {
 }
 
 #[get("/certificates")]
-pub fn list_certificates(conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    list_certificates_with_params(Default::default(), conn)
+pub fn list_certificates(conn: DbConn) -> Result<JsonValue, ApiError> {
+    list_certificates_with_params(None, conn)
 }
 
-#[get("/certificates?<params>")]
+#[get("/certificates?<params..>")]
 pub fn list_certificates_with_params(
-    params: CertificateParams,
+    params: Option<Form<CertificateParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
     let mut certificate_query = certificates::table
@@ -200,10 +209,10 @@ pub fn list_certificates_with_params(
         })
         .collect::<Result<Vec<_>, ApiError>>()?;
 
-    Ok(Json(json!({ "data": certificates,
+    Ok(json!({ "data": certificates,
                 "link": paging_info.get("link"),
                 "head": head_block_num,
-                "paging": paging_info.get("paging") })))
+                "paging": paging_info.get("paging") }))
 }
 
 fn require_org(conn: &DbConn, org_id: &str, head_block_num: i64) -> Result<Organization, ApiError> {
@@ -226,7 +235,7 @@ fn apply_paging(
     params: CertificateParams,
     head: i64,
     total_count: i64,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let mut link = String::from("/api/certificates?");
 
     if let Some(certifying_body_id) = params.certifying_body_id {

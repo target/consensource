@@ -8,8 +8,9 @@ use database_manager::tables_schema::{addresses, authorizations, contacts, organ
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
+use rocket::request::Form;
 use rocket::http::uri::Uri;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::JsonValue;
 use route_handlers::certificates::ApiCertificate;
 use std::collections::HashMap;
 
@@ -121,11 +122,11 @@ impl ApiFactory {
             name: db_organization.name,
             contacts: db_contacts
                 .into_iter()
-                .map(|contact| ApiContact::from(contact))
+                .map(ApiContact::from)
                 .collect(),
             authorizations: db_authorizations
                 .into_iter()
-                .map(|auth| ApiAuthorization::from(auth))
+                .map(ApiAuthorization::from)
                 .collect(),
             address: ApiAddress::from(db_address),
             certificates: None,
@@ -146,11 +147,11 @@ impl ApiFactory {
             name: db_organization.name,
             contacts: db_contacts
                 .into_iter()
-                .map(|contact| ApiContact::from(contact))
+                .map(ApiContact::from)
                 .collect(),
             authorizations: db_authorizations
                 .into_iter()
-                .map(|auth| ApiAuthorization::from(auth))
+                .map(ApiAuthorization::from)
                 .collect(),
             address: ApiAddress::from(db_address),
             organization_type: db_organization.organization_type,
@@ -168,18 +169,18 @@ impl ApiFactory {
     pub fn from_ref(
         db_organization: &Organization,
         db_address: &Address,
-        db_contacts: &Vec<Contact>,
-        db_authorizations: &Vec<Authorization>,
+        db_contacts: &[Contact],
+        db_authorizations: &[Authorization],
     ) -> Self {
         ApiFactory {
             id: db_organization.organization_id.to_string(),
             name: db_organization.name.to_string(),
             contacts: db_contacts
-                .into_iter()
+                .iter()
                 .map(|contact| ApiContact::from_ref(contact))
                 .collect(),
             authorizations: db_authorizations
-                .into_iter()
+                .iter()
                 .map(|auth| ApiAuthorization::from_ref(auth))
                 .collect(),
             address: ApiAddress::from_ref(db_address),
@@ -209,11 +210,11 @@ impl ApiCertifyingBody {
             name: db_organization.name,
             contacts: db_contacts
                 .into_iter()
-                .map(|contact| ApiContact::from(contact))
+                .map(ApiContact::from)
                 .collect(),
             authorizations: db_authorizations
                 .into_iter()
-                .map(|auth| ApiAuthorization::from(auth))
+                .map(ApiAuthorization::from)
                 .collect(),
             organization_type: db_organization.organization_type,
         }
@@ -240,11 +241,11 @@ impl ApiStandardsBody {
             name: db_organization.name,
             contacts: db_contacts
                 .into_iter()
-                .map(|contact| ApiContact::from(contact))
+                .map(ApiContact::from)
                 .collect(),
             authorizations: db_authorizations
                 .into_iter()
-                .map(|auth| ApiAuthorization::from(auth))
+                .map(ApiAuthorization::from)
                 .collect(),
             organization_type: db_organization.organization_type,
         }
@@ -252,16 +253,20 @@ impl ApiStandardsBody {
 }
 
 #[get("/organizations/<organization_id>")]
-pub fn fetch_organization(organization_id: String, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    fetch_organization_with_params(organization_id, Default::default(), conn)
+pub fn fetch_organization(organization_id: String, conn: DbConn) -> Result<JsonValue, ApiError> {
+    fetch_organization_with_params(organization_id, None, conn)
 }
 
-#[get("/organizations/<organization_id>?<head_param>")]
+#[get("/organizations/<organization_id>?<head_param..>")]
 pub fn fetch_organization_with_params(
     organization_id: String,
-    head_param: OrganizationParams,
+    head_param: Option<Form<OrganizationParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let head_param = match head_param {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
     let link = format!(
         "/api/organizations/{}?head={}",
@@ -301,7 +306,7 @@ pub fn fetch_organization_with_params(
                         .first::<Address>(&*conn)
                         .optional()
                         .map_err(|err| ApiError::InternalError(err.to_string()))?
-                        .unwrap_or_else(|| Address::default());
+                        .unwrap_or_else(Address::default);
                     json!(ApiFactory::from(
                         org,
                         address_results,
@@ -322,9 +327,9 @@ pub fn fetch_organization_with_params(
                 OrganizationTypeEnum::UnsetType => json!({}),
             };
 
-            Ok(Json(json!({ "data": data,
+            Ok(json!({ "data": data,
                             "link": link,
-                            "head": head_block_num,})))
+                            "head": head_block_num,}))
         }
         None => Err(ApiError::NotFound(format!(
             "No organization with the organization ID {} exists",
@@ -343,15 +348,19 @@ pub struct OrganizationParams {
 }
 
 #[get("/organizations")]
-pub fn list_organizations(conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    list_organizations_with_params(Default::default(), conn)
+pub fn list_organizations(conn: DbConn) -> Result<JsonValue, ApiError> {
+    list_organizations_with_params(None, conn)
 }
 
-#[get("/organizations?<params>")]
+#[get("/organizations?<params..>")]
 pub fn list_organizations_with_params(
-    params: OrganizationParams,
+    params: Option<Form<OrganizationParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
     let mut organizations_query = organizations::table
@@ -410,7 +419,7 @@ pub fn list_organizations_with_params(
         .into_iter()
         .fold(HashMap::new(), |mut acc, contact| {
             acc.entry(contact.organization_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(contact);
             acc
         });
@@ -432,7 +441,7 @@ pub fn list_organizations_with_params(
         .into_iter()
         .fold(HashMap::new(), |mut acc, authorization| {
             acc.entry(authorization.organization_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(authorization);
             acc
         });
@@ -457,7 +466,7 @@ pub fn list_organizations_with_params(
             acc
         });
 
-    Ok(Json(json!({
+    Ok(json!({
         "data": organization_results.into_iter()
             .map(|org| {
                 let org_id = org.organization_id.clone();
@@ -465,7 +474,7 @@ pub fn list_organizations_with_params(
                     OrganizationTypeEnum::Factory => {
                         json!(ApiFactory::from(
                             org,
-                            address_results.remove(&org_id).unwrap_or_else(|| Address::default()),
+                            address_results.remove(&org_id).unwrap_or_else(Address::default),
                             contact_results.remove(&org_id).unwrap_or_else(|| vec![]),
                             authorization_results.remove(&org_id).unwrap_or_else(|| vec![]),
                         ))
@@ -490,14 +499,14 @@ pub fn list_organizations_with_params(
         "link": paging_info.get("link"),
         "head": head_block_num,
         "paging": paging_info.get("paging")
-    })))
+    }))
 }
 
 fn apply_paging(
     params: OrganizationParams,
     head: i64,
     total_count: i64,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let mut link = String::from("/api/organizations?");
 
     if let Some(name) = params.name {

@@ -3,7 +3,8 @@ use protobuf;
 use protobuf::ProtobufEnum;
 use rocket::Data;
 use rocket::State;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket::request::Form;
+use rocket_contrib::json::JsonValue;
 use sawtooth_sdk::messages::batch::BatchList;
 use sawtooth_sdk::messages::client_batch_submit::{
     ClientBatchStatus, ClientBatchStatusRequest, ClientBatchStatusResponse,
@@ -55,7 +56,7 @@ impl Serialize for BatchStatusWrapper {
 }
 
 #[post("/batches", format = "application/octet-stream", data = "<data>")]
-pub fn submit_batches(data: Data, validator_url: State<String>) -> Result<Json<JsonValue>, ApiError> {
+pub fn submit_batches(data: Data, validator_url: State<String>) -> Result<JsonValue, ApiError> {
     let mut buffer = Vec::new();
     data.open().read_to_end(&mut buffer).unwrap();
     let batch_list: BatchList =
@@ -76,9 +77,9 @@ pub fn submit_batches(data: Data, validator_url: State<String>) -> Result<Json<J
     .map_err(|err| ApiError::InternalError(err.to_string()))?;
 
     match response.status {
-        ClientBatchSubmitResponse_Status::OK => Ok(Json(
+        ClientBatchSubmitResponse_Status::OK => Ok(
             json!({ "link": "/batch_statuses?id=".to_string() + &batch_ids.join(",") }),
-        )),
+        ),
         ClientBatchSubmitResponse_Status::STATUS_UNSET => {
             Err(ApiError::InternalError("Validator error".to_string()))
         }
@@ -100,11 +101,11 @@ pub struct BatchStatusesParams {
     wait: Option<u32>,
 }
 
-#[get("/batch_statuses?<params>")]
+#[get("/batch_statuses?<params..>")]
 pub fn list_statuses(
-    params: BatchStatusesParams,
+    params: Form<BatchStatusesParams>,
     validator_url: State<String>,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let batch_ids: Vec<String> = params.id.split(',').map(|id| id.to_string()).collect();
 
     let mut batch_status_request = ClientBatchStatusRequest::new();
@@ -130,10 +131,10 @@ pub fn list_statuses(
                 .map(|batch_status| BatchStatusWrapper(batch_status.clone()))
                 .collect();
 
-            Ok(Json(json!({
+            Ok(json!({
                 "data": batch_statuses,
                 "link": "/batch_statuses?id=".to_string() + &params.id
-            })))
+            }))
         }
         ClientBatchStatusResponse_Status::STATUS_UNSET => {
             Err(ApiError::InternalError("Validator error".to_string()))
@@ -161,9 +162,8 @@ where
 {
     let connection = ZmqMessageConnection::new(&validator_url);
     let (sender, _) = connection.create();
-    let correlation_id = uuid::Uuid::new(uuid::UuidVersion::Random)
-        .unwrap()
-        .to_string();
+    let correlation_id = uuid::Uuid::new_v4()
+        .to_simple().to_string();
     let msg_bytes = T::write_to_bytes(&msg).unwrap();
     let mut future = sender
         .send(msg_type, &correlation_id, &msg_bytes)

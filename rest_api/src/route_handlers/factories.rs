@@ -11,8 +11,9 @@ use database_manager::tables_schema::{
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
+use rocket::request::Form;
 use rocket::http::uri::Uri;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::JsonValue;
 use route_handlers::organizations::ApiFactory;
 
 #[derive(Default, FromForm, Clone)]
@@ -25,16 +26,20 @@ pub struct FactoryParams {
 }
 
 #[get("/factories/<organization_id>")]
-pub fn fetch_factory(organization_id: String, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    fetch_factory_with_head_param(organization_id, Default::default(), conn)
+pub fn fetch_factory(organization_id: String, conn: DbConn) -> Result<JsonValue, ApiError> {
+    fetch_factory_with_head_param(organization_id, None, conn)
 }
 
-#[get("/factories/<organization_id>?<params>")]
+#[get("/factories/<organization_id>?<params..>")]
 pub fn fetch_factory_with_head_param(
     organization_id: String,
-    params: FactoryParams,
+    params: Option<Form<FactoryParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
     let factory = organizations::table
@@ -71,9 +76,9 @@ pub fn fetch_factory_with_head_param(
                 .first::<Address>(&*conn)
                 .optional()
                 .map_err(|err| ApiError::InternalError(err.to_string()))?
-                .unwrap_or_else(|| Address::default());
+                .unwrap_or_else(Address::default);
 
-            Ok(Json(json!({
+            Ok(json!({
                 "data": match params.expand {
                     Some(_) => {
                         let certificate_results = query_certifications(conn, head_block_num, &[organization_id.to_string()])?;
@@ -97,7 +102,7 @@ pub fn fetch_factory_with_head_param(
                 },
                 "link": link,
                 "head": head_block_num,
-            })))
+            }))
         }
         None => Err(ApiError::NotFound(format!(
             "No factory with the organization ID {} exists",
@@ -107,16 +112,20 @@ pub fn fetch_factory_with_head_param(
 }
 
 #[get("/factories")]
-pub fn list_factories(conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    query_factories(Default::default(), conn)
+pub fn list_factories(conn: DbConn) -> Result<JsonValue, ApiError> {
+    query_factories(None, conn)
 }
 
-#[get("/factories?<params>")]
-pub fn list_factories_params(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
+#[get("/factories?<params..>")]
+pub fn list_factories_params(params: Option<Form<FactoryParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
     query_factories(params, conn)
 }
 
-fn query_factories(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
+fn query_factories(params: Option<Form<FactoryParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
     let mut factories_query = organizations::table
@@ -167,7 +176,7 @@ fn query_factories(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue
         .into_iter()
         .fold(HashMap::new(), |mut acc, contact| {
             acc.entry(contact.organization_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(contact);
             acc
         });
@@ -189,7 +198,7 @@ fn query_factories(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue
         .into_iter()
         .fold(HashMap::new(), |mut acc, authorization| {
             acc.entry(authorization.organization_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(authorization);
             acc
         });
@@ -218,20 +227,20 @@ fn query_factories(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue
                 HashMap::new(),
                 |mut acc, cert_info: (Certificate, Standard, Organization)| {
                     acc.entry(cert_info.0.factory_id.to_string())
-                        .or_insert(vec![])
+                        .or_insert_with(|| vec![])
                         .push(cert_info);
                     acc
                 },
             );
 
-    Ok(Json(json!({
+    Ok(json!({
         "data": factory_results.into_iter()
             .map(|factory| {
                 let org_id = factory.organization_id.clone();
                 if expand {
                     json!(ApiFactory::with_certificate_expanded(
                         factory,
-                        address_results.remove(&org_id).unwrap_or_else(|| Address::default()),
+                        address_results.remove(&org_id).unwrap_or_else(Address::default),
                         contact_results.remove(&org_id).unwrap_or_else(|| vec![]),
                         authorization_results.remove(&org_id).unwrap_or_else(|| vec![]),
                         cert_results.remove(&org_id).unwrap_or_else(|| vec![]),
@@ -239,7 +248,7 @@ fn query_factories(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue
                 } else {
                     json!(ApiFactory::from(
                         factory,
-                        address_results.remove(&org_id).unwrap_or_else(|| Address::default()),
+                        address_results.remove(&org_id).unwrap_or_else(Address::default),
                         contact_results.remove(&org_id).unwrap_or_else(|| vec![]),
                         authorization_results.remove(&org_id).unwrap_or_else(|| vec![]),
                     ))
@@ -248,7 +257,7 @@ fn query_factories(params: FactoryParams, conn: DbConn) -> Result<Json<JsonValue
         "link": paging_info.get("link"),
         "head": head_block_num,
         "paging": paging_info.get("paging")
-    })))
+    }))
 }
 
 fn query_certifications(
@@ -297,7 +306,7 @@ fn apply_paging(
     params: FactoryParams,
     head: i64,
     total_count: i64,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let mut link = String::from("/api/factories?");
 
     if let Some(name) = params.name {

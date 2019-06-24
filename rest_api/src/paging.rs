@@ -3,7 +3,7 @@ use database_manager::tables_schema::blocks;
 use diesel::dsl::max;
 use diesel::prelude::*;
 use errors::ApiError;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::JsonValue;
 
 pub const DEFAULT_LIMIT: i64 = 100;
 pub const DEFAULT_OFFSET: i64 = 0;
@@ -13,7 +13,7 @@ pub fn get_response_paging_info(
     offset: Option<i64>,
     link: String,
     query_count: i64,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let limit = limit.unwrap_or(DEFAULT_LIMIT);
     let offset = offset.unwrap_or(DEFAULT_OFFSET);
 
@@ -41,7 +41,7 @@ pub fn get_response_paging_info(
 
     let next_link = format!("{}offset={}", base_link, next_offset);
 
-    Ok(Json(json!({ "link": current_link,
+    Ok(json!({ "link": current_link,
     "paging": {
         "offset": offset,
         "limit": limit,
@@ -50,7 +50,7 @@ pub fn get_response_paging_info(
         "prev": previous_link,
         "next": next_link,
         "last": last_link,
-    }})))
+    }}))
 }
 
 pub fn get_head_block_num(head: Option<i64>, conn: &DbConn) -> Result<i64, ApiError> {
@@ -68,7 +68,7 @@ pub fn get_head_block_num(head: Option<i64>, conn: &DbConn) -> Result<i64, ApiEr
 #[cfg(test)]
 mod tests {
     use paging::*;
-    use rocket_contrib::json::{Json, JsonValue};
+    use rocket_contrib::json::JsonValue;
 
     const TEST_LINK: &str = "/api/test?";
 
@@ -186,7 +186,7 @@ mod tests {
         next_offset: i64,
         previous_offset: i64,
         last_offset: i64,
-    ) -> Result<Json<JsonValue>, ApiError> {
+    ) -> Result<JsonValue, ApiError> {
         // Creates a generated paging response from the limit and offset values passed into the function
         let base_link = format!("{}limit={}&", TEST_LINK, limit);
         let current_link = format!("{}offset={}", base_link, offset);
@@ -195,7 +195,7 @@ mod tests {
         let previous_link = format!("{}offset={}", base_link, previous_offset);
         let last_link = format!("{}offset={}", base_link, last_offset);
 
-        Ok(Json(json!({ "link": current_link,
+        Ok(json!({ "link": current_link,
         "paging": {
             "offset": offset,
             "limit": limit,
@@ -204,6 +204,6 @@ mod tests {
             "prev": previous_link,
             "next": next_link,
             "last": last_link,
-        }})))
+        }}))
     }
 }

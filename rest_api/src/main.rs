@@ -1,11 +1,9 @@
 #![feature(custom_attribute)]
 #![feature(plugin)]
-#![feature(proc_macro_hygiene)]
-#![feature(decl_macro)]
-// #![plugin(rocket_codegen)]
+#![feature(proc_macro_hygiene, decl_macro)]
 // 'needless_pass_by_value' lint disabled due to an issue in Rocket
 // https://github.com/SergioBenitez/Rocket/issues/294
-#![cfg_attr(feature = "cargo-clippy", allow(needless_pass_by_value))]
+#![allow(clippy::needless_pass_by_value)]
 
 #[macro_use]
 extern crate clap;
@@ -134,11 +132,11 @@ fn main() {
 
     let connection_pool = init_pool(database_url);
 
-    let host = env::var("ROCKET_ADDRESS").unwrap_or("127.0.0.1".into());
+    let host = env::var("ROCKET_ADDRESS").unwrap_or_else(|_| "127.0.0.1".into());
 
     let port: u16 = match env::var("ROCKET_PORT")
         .ok()
-        .unwrap_or("8000".into())
+        .unwrap_or_else(|| "8000".into())
         .parse()
     {
         Ok(port) => port,

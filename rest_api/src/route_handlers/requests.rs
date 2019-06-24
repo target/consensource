@@ -9,23 +9,29 @@ use database_manager::tables_schema::{
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket::request::Form;
+use rocket::http::uri::Uri;
+use rocket_contrib::json::JsonValue;
 use std::collections::HashMap;
 
 use route_handlers::organizations::ApiFactory;
 use route_handlers::standards::ApiStandard;
 
 #[get("/requests/<request_id>")]
-pub fn fetch_request(request_id: String, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    fetch_request_with_head_param(request_id, Default::default(), conn)
+pub fn fetch_request(request_id: String, conn: DbConn) -> Result<JsonValue, ApiError> {
+    fetch_request_with_head_param(request_id, None, conn)
 }
 
-#[get("/requests/<request_id>?<head_param>")]
+#[get("/requests/<request_id>?<head_param..>")]
 pub fn fetch_request_with_head_param(
     request_id: String,
-    head_param: CertRequestParams,
+    head_param: Option<Form<CertRequestParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+    let head_param = match head_param {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
 
     let request = requests::table
@@ -44,19 +50,18 @@ pub fn fetch_request_with_head_param(
     match request {
         Some(request) => {
             if let Some(true) = head_param.expand {
-                let (
-                    factory_results,
-                    contact_results,
-                    authorization_results,
-                    address_results,
-                    standard_results,
-                    standard_version_results,
-                ) = fetch_expansions(
+                let expansions = fetch_expansions(
                     &conn,
                     &[request.factory_id.clone()],
                     &[request.standard_id.clone()],
                     head_block_num,
                 )?;
+                let factory_results = expansions.factory_results;
+                let contact_results = expansions.contact_results;
+                let authorization_results = expansions.authorization_results;
+                let address_results = expansions.address_results;
+                let standard_results = expansions.standard_results;
+                let standard_version_results = expansions.standard_version_results;
                 let factory_id = request.factory_id.clone();
                 let standard_id = request.standard_id.clone();
                 let factory = ApiFactory::from_ref(
@@ -78,17 +83,17 @@ pub fn fetch_request_with_head_param(
                         .expect("Error getting standard versions"),
                 ));
 
-                Ok(Json(json!({
+                Ok(json!({
                     "data": ApiRequest::with_expansion(request, factory, standard),
                     "link": link,
                     "head": head_block_num,
-                })))
+                }))
             } else {
-                Ok(Json(json!({
+                Ok(json!({
                     "data": ApiRequest::from(request),
                     "link": link,
                     "head": head_block_num,
-                })))
+                }))
             }
         }
         None => Err(ApiError::NotFound(format!(
@@ -124,11 +129,12 @@ impl ApiRequest {
                 id: req.factory_id.clone(),
                 link: format!(
                     "/api/organizations/{}",
-                    req.factory_id)
+                    Uri::percent_encode(&req.factory_id)
+                ),
             },
             standard: StandardExpansion::Ref {
                 id: req.standard_id.clone(),
-                link: format!("/api/standards/{}", req.standard_id),
+                link: format!("/api/standards/{}", Uri::percent_encode(&req.standard_id)),
             },
             status: req.status,
             request_date: req.request_date,
@@ -138,7 +144,7 @@ impl ApiRequest {
     pub fn with_expansion(req: Request, factory: ApiFactory, standard: ApiStandard) -> Self {
         ApiRequest {
             id: req.request_id,
-            factory: FactoryExpansion::Expanded(factory),
+            factory: FactoryExpansion::Expanded(Box::new(factory)),
             standard: StandardExpansion::Expanded(standard),
             status: req.status,
             request_date: req.request_date,
@@ -150,7 +156,7 @@ impl ApiRequest {
 #[serde(untagged)]
 pub enum FactoryExpansion {
     Ref { id: String, link: String },
-    Expanded(ApiFactory),
+    Expanded(Box<ApiFactory>),
 }
 
 #[derive(Serialize)]
@@ -161,19 +167,24 @@ pub enum StandardExpansion {
 }
 
 #[get("/requests")]
-pub fn list_requests(conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
-    query_requests(Default::default(), conn)
+pub fn list_requests(conn: DbConn) -> Result<JsonValue, ApiError> {
+    query_requests(None, conn)
 }
 
-#[get("/requests?<params>")]
+#[get("/requests?<params..>")]
 pub fn list_request_with_params(
-    params: CertRequestParams,
+    params: Option<Form<CertRequestParams>>,
     conn: DbConn,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
+
     query_requests(params, conn)
 }
 
-fn query_requests(params: CertRequestParams, conn: DbConn) -> Result<Json<JsonValue>, ApiError> {
+fn query_requests(params: Option<Form<CertRequestParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+    let params = match params {
+        Some(param) => param.into_inner(),
+        None => Default::default()
+    };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
     let expand = params.expand.unwrap_or(false);
 
@@ -217,16 +228,15 @@ fn query_requests(params: CertRequestParams, conn: DbConn) -> Result<Json<JsonVa
             .iter()
             .map(|request| request.standard_id.to_string())
             .collect::<Vec<String>>();
-        let (
-            factory_results,
-            contact_results,
-            authorization_results,
-            address_results,
-            standard_results,
-            standard_version_results,
-        ) = fetch_expansions(&conn, &factory_ids, &standard_ids, head_block_num)?;
+        let expansions = fetch_expansions(&conn, &factory_ids, &standard_ids, head_block_num)?;
+        let factory_results = expansions.factory_results;
+        let contact_results = expansions.contact_results;
+        let authorization_results = expansions.authorization_results;
+        let address_results = expansions.address_results;
+        let standard_results = expansions.standard_results;
+        let standard_version_results = expansions.standard_version_results;
 
-        Ok(Json(json!({
+        Ok(json!({
             "data": request_results.into_iter()
                 .map(|request| {
                     let factory_id = request.factory_id.clone();
@@ -245,16 +255,25 @@ fn query_requests(params: CertRequestParams, conn: DbConn) -> Result<Json<JsonVa
             "link": paging_info.get("link"),
             "head": head_block_num,
             "paging":paging_info.get("paging")
-        })))
+        }))
     } else {
-        Ok(Json(json!({
+        Ok(json!({
             "data": request_results.into_iter()
                 .map(ApiRequest::from).collect::<Vec<_>>(),
             "link": paging_info.get("link"),
             "head": head_block_num,
             "paging":paging_info.get("paging")
-        })))
+        }))
     }
+}
+
+pub struct Expansions {
+    factory_results: HashMap<String, Organization>,
+    contact_results: HashMap<String, Vec<Contact>>,
+    authorization_results: HashMap<String, Vec<Authorization>>,
+    address_results: HashMap<String, Address>,
+    standard_results: HashMap<String, Standard>,
+    standard_version_results: HashMap<String, Vec<StandardVersion>>,
 }
 
 fn fetch_expansions(
@@ -263,14 +282,7 @@ fn fetch_expansions(
     standard_ids: &[String],
     head_block_num: i64,
 ) -> Result<
-    (
-        HashMap<String, Organization>,
-        HashMap<String, Vec<Contact>>,
-        HashMap<String, Vec<Authorization>>,
-        HashMap<String, Address>,
-        HashMap<String, Standard>,
-        HashMap<String, Vec<StandardVersion>>,
-    ),
+    Expansions,
     ApiError,
 > {
     let factory_results: HashMap<String, Organization> = organizations::table
@@ -296,7 +308,7 @@ fn fetch_expansions(
         .into_iter()
         .fold(HashMap::new(), |mut acc, contact| {
             acc.entry(contact.organization_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(contact);
             acc
         });
@@ -311,7 +323,7 @@ fn fetch_expansions(
         .into_iter()
         .fold(HashMap::new(), |mut acc, authorization| {
             acc.entry(authorization.organization_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(authorization);
             acc
         });
@@ -350,30 +362,31 @@ fn fetch_expansions(
         .into_iter()
         .fold(HashMap::new(), |mut acc, standard_version| {
             acc.entry(standard_version.standard_id.to_string())
-                .or_insert(vec![])
+                .or_insert_with(|| vec![])
                 .push(standard_version);
             acc
         });
-
-    Ok((
+    let expansions = Expansions {
         factory_results,
         contact_results,
         authorization_results,
         address_results,
         standard_results,
         standard_version_results,
-    ))
+    };
+
+    Ok(expansions)
 }
 
 fn apply_paging(
     params: CertRequestParams,
     head: i64,
     total_count: i64,
-) -> Result<Json<JsonValue>, ApiError> {
+) -> Result<JsonValue, ApiError> {
     let mut link = String::from("/api/requests?");
 
     if let Some(factory_id) = params.factory_id {
-        link = format!("{}factory_id={}&", link, factory_id);
+        link = format!("{}factory_id={}&", link, Uri::percent_encode(&factory_id));
     }
     if let Some(expand) = params.expand {
         link = format!("{}expand={}&", link, expand);
