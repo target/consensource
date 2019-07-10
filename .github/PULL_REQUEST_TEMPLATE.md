@@ -1,5 +1,3 @@
-### ❤ THANKS FOR HELPING OUT
-
 ## Proposed change/fix
 
 Describe your change/fix and tell us why we should accept the it. Linking to the issue(s) is helpful too. If there is no outstanding issue, please create one in correspondence to this PR.
