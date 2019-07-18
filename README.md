@@ -1,4 +1,6 @@
-Tested for open source using: rustc 1.31.0-nightly (1cf82fd9c 2018-10-30)
+rest-api tested for open source using: rustc 1.31.0-nightly (1cf82fd9c 2018-10-30)
+
+the rest of the project should run on the stable toolchain
 
 # ConsenSource
 
