@@ -1,4 +1,4 @@
-FROM docker.target.com/bat/sawtooth-build-agent-os
+FROM target/consensource:build_agent
 
 COPY . .
 
