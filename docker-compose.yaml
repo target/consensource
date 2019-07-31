@@ -32,7 +32,7 @@ services:
        fi;
        mkdir -p /shared_data/keys && \
          creg genesis -o /shared_data/creg-genesis.batch -K /shared_data/keys \
-             -g /project/cert_registry/cli/example-genesis.yaml;
+             -g /project/consensource/cli/example-genesis.yaml;
        tail -f /dev/null
       "
 

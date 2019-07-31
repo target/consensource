@@ -15,4 +15,4 @@ COPY . .
 WORKDIR cli
 RUN cargo build
 
-ENV PATH=$PATH:/project/cert_registry/cli/target/debug/
+ENV PATH=$PATH:/project/consensource/cli/target/debug/
