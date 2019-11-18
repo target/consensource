@@ -1,9 +1,9 @@
 use errors::ApiError;
 use protobuf;
 use protobuf::ProtobufEnum;
+use rocket::request::Form;
 use rocket::Data;
 use rocket::State;
-use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
 use sawtooth_sdk::messages::batch::BatchList;
 use sawtooth_sdk::messages::client_batch_submit::{
@@ -77,9 +77,9 @@ pub fn submit_batches(data: Data, validator_url: State<String>) -> Result<JsonVa
     .map_err(|err| ApiError::InternalError(err.to_string()))?;
 
     match response.status {
-        ClientBatchSubmitResponse_Status::OK => Ok(
-            json!({ "link": "/batch_statuses?id=".to_string() + &batch_ids.join(",") }),
-        ),
+        ClientBatchSubmitResponse_Status::OK => {
+            Ok(json!({ "link": "/batch_statuses?id=".to_string() + &batch_ids.join(",") }))
+        }
         ClientBatchSubmitResponse_Status::STATUS_UNSET => {
             Err(ApiError::InternalError("Validator error".to_string()))
         }
@@ -162,8 +162,7 @@ where
 {
     let connection = ZmqMessageConnection::new(&validator_url);
     let (sender, _) = connection.create();
-    let correlation_id = uuid::Uuid::new_v4()
-        .to_simple().to_string();
+    let correlation_id = uuid::Uuid::new_v4().to_simple().to_string();
     let msg_bytes = T::write_to_bytes(&msg).unwrap();
     let mut future = sender
         .send(msg_type, &correlation_id, &msg_bytes)

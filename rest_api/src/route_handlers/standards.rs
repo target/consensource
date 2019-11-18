@@ -82,7 +82,7 @@ pub fn list_standards_with_params(
 ) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
     let mut standards_query = standards::table

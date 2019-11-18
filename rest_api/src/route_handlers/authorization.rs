@@ -95,10 +95,7 @@ pub struct UserAuthenticate {
 }
 
 #[post("/users/authenticate", format = "application/json", data = "<payload>")]
-pub fn authenticate(
-    payload: Json<UserAuthenticate>,
-    conn: DbConn,
-) -> Result<JsonValue, ApiError> {
+pub fn authenticate(payload: Json<UserAuthenticate>, conn: DbConn) -> Result<JsonValue, ApiError> {
     let user_auth = payload.0;
     if let Some(user) = find_user_by_username(&conn, &user_auth.username)? {
         if verify(&user_auth.password, &user.hashed_password)? {

@@ -59,7 +59,7 @@ pub fn fetch_agent_with_head_param(
 ) -> Result<JsonValue, ApiError> {
     let head_param = match head_param {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
 
@@ -112,10 +112,13 @@ pub fn list_agents(conn: DbConn) -> Result<JsonValue, ApiError> {
 }
 
 #[get("/agents?<params..>")]
-pub fn list_agents_with_params(params: Option<Form<AgentParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+pub fn list_agents_with_params(
+    params: Option<Form<AgentParams>>,
+    conn: DbConn,
+) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 

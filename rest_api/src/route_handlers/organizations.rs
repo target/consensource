@@ -8,8 +8,8 @@ use database_manager::tables_schema::{addresses, authorizations, contacts, organ
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
-use rocket::request::Form;
 use rocket::http::uri::Uri;
+use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
 use route_handlers::certificates::ApiCertificate;
 use std::collections::HashMap;
@@ -120,10 +120,7 @@ impl ApiFactory {
         ApiFactory {
             id: db_organization.organization_id.to_string(),
             name: db_organization.name,
-            contacts: db_contacts
-                .into_iter()
-                .map(ApiContact::from)
-                .collect(),
+            contacts: db_contacts.into_iter().map(ApiContact::from).collect(),
             authorizations: db_authorizations
                 .into_iter()
                 .map(ApiAuthorization::from)
@@ -145,10 +142,7 @@ impl ApiFactory {
         ApiFactory {
             id: db_organization.organization_id.to_string(),
             name: db_organization.name,
-            contacts: db_contacts
-                .into_iter()
-                .map(ApiContact::from)
-                .collect(),
+            contacts: db_contacts.into_iter().map(ApiContact::from).collect(),
             authorizations: db_authorizations
                 .into_iter()
                 .map(ApiAuthorization::from)
@@ -208,10 +202,7 @@ impl ApiCertifyingBody {
         ApiCertifyingBody {
             id: db_organization.organization_id.to_string(),
             name: db_organization.name,
-            contacts: db_contacts
-                .into_iter()
-                .map(ApiContact::from)
-                .collect(),
+            contacts: db_contacts.into_iter().map(ApiContact::from).collect(),
             authorizations: db_authorizations
                 .into_iter()
                 .map(ApiAuthorization::from)
@@ -239,10 +230,7 @@ impl ApiStandardsBody {
         ApiStandardsBody {
             id: db_organization.organization_id.to_string(),
             name: db_organization.name,
-            contacts: db_contacts
-                .into_iter()
-                .map(ApiContact::from)
-                .collect(),
+            contacts: db_contacts.into_iter().map(ApiContact::from).collect(),
             authorizations: db_authorizations
                 .into_iter()
                 .map(ApiAuthorization::from)
@@ -265,7 +253,7 @@ pub fn fetch_organization_with_params(
 ) -> Result<JsonValue, ApiError> {
     let head_param = match head_param {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
     let link = format!(
@@ -359,7 +347,7 @@ pub fn list_organizations_with_params(
 ) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
