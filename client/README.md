@@ -1,18 +1,28 @@
 # Client
 
-## Prerequisites
+The ConsenSource UI is comprised of a number of Mithril applications under the same router. The default application that is served from the `index.html` page is for retailers. To access the other apps, specify the relative .html file in [/public](/public) such as `localhost:8080/index_auditor.html`.
 
-  - Node8 `brew install node@8`
-    -You will need to add `"/usr/local/opt/node@8/bin"` to your PATH
+## Env Setup
+
+  - Node8: `brew install node@8`
 
 ## Building
 
   - `npm install`
   - `npm run build`
 
-## Running
+## Development
 
-From the project root, after building:
+### Running 
+Running in watch mode is the easiest way to develop as it will compile changes on save. This can be started by running:
+
+```
+$ npm run watch
+
+--- Note: This command will not compress your build - it is therefore recommended to perform final testing with a production build. ---
+```
+
+After building the client, _cd_ root of the repo repo and run:
 
 ```
 $ docker-compose -f docker-compose.yaml up
@@ -20,19 +30,6 @@ $ docker-compose -f docker-compose.yaml up
 
 This will start an httpd server, with the files hosted available at
 [http://localhost:8080](http://localhost:8080).
-
-## Development
-
-At development time, builds can run in watch mode.  This will compile changes at
-file save time.  The output will provide source maps and will not be compressed.
-It is recommended to test your work with a standard build, which outputs in
-production mode.
-
-This can be started by running:
-
-```
-$ npm run watch
-```
 
 ### Linting
 

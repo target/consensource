@@ -3,7 +3,7 @@ var path = require('path')
 module.exports = {
   entry: {
     auditor: './src/entrypoint_auditor.js',
-    cert_reg: './src/entrypoint_retailer.js',
+    retailer: './src/entrypoint_retailer.js',
     factory: './src/entrypoint_factory.js',
     standards_body: './src/entrypoint_standards_body.js'
   },

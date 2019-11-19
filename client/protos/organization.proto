@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+import "standard.proto";
+
+message Organization {
+    enum Type {
+        UNSET_TYPE = 0;
+        CERTIFYING_BODY = 1;
+        STANDARDS_BODY = 2;
+        FACTORY = 3;
+    }
+
+    message Authorization {
+        enum Role {
+            UNSET_ROLE = 0;
+            ADMIN = 1;
+            TRANSACTOR = 2;
+        }
+        // Public key of the authorized agent.
+        string public_key = 1;
+
+        // Agent's role within the organization.
+        Role role = 2;
+    }
+
+    message Contact {
+        // Name of the person.
+        string name = 1;
+
+        // Contact's phone number.
+        string phone_number = 2;
+
+        // ISO 639‑1 language code of the contact.
+        string language_code = 3;
+    }
+
+    // UUID of the organization.
+    string id = 1;
+
+    // Name of the organization.
+    string name = 2;
+
+    // List of authorized agents and their roles within the organization.
+    repeated Authorization authorizations = 3;
+
+    // List contacts within the organization.
+    repeated Contact contacts = 4;
+
+    // What type of organization this data represents.
+    Type organization_type = 5;
+
+
+    // Only one of these fields will be filled based on the organization type.
+    CertifyingBody certifying_body_details = 6;
+    StandardsBody standards_body_details = 7;
+    Factory factory_details = 8;
+}
+
+message CertifyingBody {
+    message Accreditation {
+        // Standard for which the accreditation has been issued.
+        string standard_id = 1;
+
+        // Standard version for which the accreditation has been issued.
+        string standard_version = 2;
+
+        // Standards body that issued the accreditation.
+        string accreditor_id = 3;
+
+        // Time range that the accreditation is valid (UTC Timestamps)
+        uint64 valid_from = 4;
+        uint64 valid_to = 5;
+    }
+
+    // List of accreditations that the certifying body holds.
+    repeated Accreditation accreditations = 1;
+}
+
+message StandardsBody {
+  // This is message could be used to capture information that is only
+  // pertinent to a StandardsBody
+}
+
+message Factory {
+    message Address {
+        // Street address, Line 1
+        string street_line_1 = 1;
+
+        // Street address, Line 2 (optional)
+        string street_line_2 = 2;
+
+        // City
+        string city = 3;
+
+        // State or province, (optional)
+        string state_province = 4;
+
+        // Country
+        string country = 5;
+
+        // Postal Code, (optional)
+        string postal_code = 6;
+    }
+
+    // Location of the factory
+    Address address = 1;
+}
+
+message OrganizationContainer {
+    repeated Organization entries = 1;
+}
