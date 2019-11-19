@@ -9,10 +9,9 @@ What types of changes is this pull request introducing to ConsenSource? _Put an 
 - [ ] Bugfix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Other (could be a small readme update, documentation contribution, etc.)
 
-## Checklist
+## How to run/test
 
-You can fill this out after creating your PR. _Put an `x` in the boxes that apply_
-
-- [ ] I have added necessary documentation (if appropriate)
-- [ ] I have added tests that prove my fix/feature works (if appropriate)
+Please include instructions on how to run/test your contribution. Tests are welcomed!
+Disregard this if your contribution is less technical (little to no code)
