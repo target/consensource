@@ -58,7 +58,7 @@ pub fn fetch_certificate_with_head_param(
 ) -> Result<JsonValue, ApiError> {
     let head_param = match head_param {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
     let result: Option<Result<(Certificate, Organization, Standard, Organization), ApiError>> =
@@ -137,7 +137,7 @@ pub fn list_certificates_with_params(
 ) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 

@@ -8,9 +8,9 @@ bcrypt = "0.2"
 clap = "2"
 database = { path = "../database" }
 diesel = { version = "1.0.0", features = ["postgres", "r2d2"] }
-protobuf = "2"
-rocket = "0.4.1"
-rocket_contrib = "0.4.1"
+protobuf = "2.8.1"
+rocket = "0.4.2"
+rocket_contrib = "0.4.2"
 sawtooth-sdk = "0.1"
 serde = "1.0"
 serde_json = "1.0"
@@ -27,5 +27,5 @@ log4rs = "0.8"
 
 
 # SSE Dependencies
-hyper-sse = { git = "https://github.com/peterschwarz/hyper-sse.git", branch = "0.1-no-tokens" }
+hyper-sse = { git = "https://github.com/adeebahmed/hyper-sse.git", branch = "0.1-no-tokens" }
 lazy_static  = "1"

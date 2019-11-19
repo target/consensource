@@ -4,11 +4,11 @@ version = "0.1.0"
 authors = ["Target"]
 
 [dependencies]
-protobuf = "2.0"
+protobuf = "2.8.1"
 
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-rust_crypto = {git = "https://github.com/agunde406/rust-crypto", branch="wasm_sha2"}
+rust_crypto = {git = "https://github.com/adeebahmed/rust-crypto", branch="wasm_sha2"}
 
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]

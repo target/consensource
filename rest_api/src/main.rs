@@ -1,4 +1,3 @@
-#![feature(custom_attribute)]
 #![feature(plugin)]
 #![feature(proc_macro_hygiene, decl_macro)]
 // 'needless_pass_by_value' lint disabled due to an issue in Rocket

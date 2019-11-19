@@ -1,19 +1,57 @@
 language: rust
 rust:
-  - nightly
-matrix:
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
-cache: cargo
+  - 1.39.0
 
-
-services:
-- docker
 before_install:
-- docker pull target/consensource:build_agent
-- docker pull target/consensource:linter
-#- docker pull target/consensource:linter-nightly
-- docker run -it -v $(pwd):/consensource target/consensource:linter /bin/sh -c "cd /consensource; cd cli && cargo fmt -- --check; cd ../common && cargo fmt -- --check; cd ../database && cargo fmt -- --check; cd ../processor && cargo fmt -- --check; cd ../state_delta_subscriber && cargo fmt -- --check; cd ..;"
-- docker run -it -v $(pwd):/consensource target/consensource:build_agent /bin/sh -c "cd /consensource; cd cli && cargo test; cd ../common && cargo test; cd ../database && cargo test; cd ../processor && cargo test; cd ../state_delta_subscriber && cargo test;" #cd ../rest_api && cargo test;"
-# - docker run -it -v $(pwd):/consensource target/consensource:linter-nightly /bin/sh -c "cd /consensource; cd rest_api && cargo fmt -- --check"
+  # Install ZMQ
+  - sudo apt-get update 
+  - sudo apt-get install -y libzmq3-dev unzip protobuf-compiler
+  - sudo apt-get clean
+  # Install protoc for protoc-rust crate (automate protobuf generation)
+  - curl -OLsS https://github.com/google/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip
+  - unzip protoc-3.6.1-linux-x86_64.zip -d protoc3
+  - rm protoc-3.6.1-linux-x86_64.zip
+  # Set system protoc to protoc3 (defaults to protoc2)
+  - sudo mv protoc3/bin/* /usr/local/bin/
+  - sudo mv protoc3/include/* /usr/local/include/
+  - rm -rf protoc3/
+  # Install latest stable/nightly of rust toolchain & linter (rustfmt)
+  - rustup component add rustfmt
+  - rustup toolchain install nightly # Nightly needed for rocket rest api
+  - rustup component add rustfmt --toolchain nightly
+
+before_script:
+  - echo $TRAVIS_COMMIT
+  - echo $TRAVIS_TAG
+  - echo $TRAVIS_BRANCH
+  - echo $TRAVIS_BUILD_NUMBER
+  - echo $TRAVIS_REPO_SLUG
+
+script:
+  # Lint, build common
+  - cd common
+  - cargo fmt -- --check
+  - cargo build
+  # Lint, build database
+  - cd ../database
+  - cargo fmt -- --check
+  - cargo build
+  # Lint, test, build cli
+  - cd ../cli
+  - cargo fmt -- --check
+  - cargo test
+  - cargo build
+  # Lint, build processor
+  - cd ../processor
+  - cargo fmt -- --check
+  - cargo build
+   # Lint, build state delta subscriber
+  - cd ../state_delta_subscriber
+  - cargo fmt -- --check
+  - cargo build
+  # Lint, build rest-api with nightly
+  - cd ../rest_api
+  - rustup default nightly
+  - cargo +nightly fmt -- --check
+  - cargo build
+

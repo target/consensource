@@ -47,10 +47,12 @@ fn run_create_command<'a>(args: &ArgMatches<'a>) -> Result<(), CliError> {
         "3" => Ok(Organization_Type::FACTORY),
         "4" => Err(CliError::InvalidInputError(format!(
             "Organization type 4 is not yet implemented. Valid types are: \n {org_types}",
-            org_types=valid_org_types))),
+            org_types = valid_org_types
+        ))),
         other => Err(CliError::UserError(format!(
             "Invalid organization type: {:?}. Valid types are: \n {org_types}",
-            other, org_types=valid_org_types
+            other,
+            org_types = valid_org_types
         ))),
     }?;
 

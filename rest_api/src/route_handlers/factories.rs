@@ -11,8 +11,8 @@ use database_manager::tables_schema::{
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
-use rocket::request::Form;
 use rocket::http::uri::Uri;
+use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
 use route_handlers::organizations::ApiFactory;
 
@@ -38,7 +38,7 @@ pub fn fetch_factory_with_head_param(
 ) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
@@ -117,14 +117,20 @@ pub fn list_factories(conn: DbConn) -> Result<JsonValue, ApiError> {
 }
 
 #[get("/factories?<params..>")]
-pub fn list_factories_params(params: Option<Form<FactoryParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+pub fn list_factories_params(
+    params: Option<Form<FactoryParams>>,
+    conn: DbConn,
+) -> Result<JsonValue, ApiError> {
     query_factories(params, conn)
 }
 
-fn query_factories(params: Option<Form<FactoryParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+fn query_factories(
+    params: Option<Form<FactoryParams>>,
+    conn: DbConn,
+) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
 
@@ -302,11 +308,7 @@ fn query_certifications(
         .collect()
 }
 
-fn apply_paging(
-    params: FactoryParams,
-    head: i64,
-    total_count: i64,
-) -> Result<JsonValue, ApiError> {
+fn apply_paging(params: FactoryParams, head: i64, total_count: i64) -> Result<JsonValue, ApiError> {
     let mut link = String::from("/api/factories?");
 
     if let Some(name) = params.name {

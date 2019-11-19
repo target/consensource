@@ -9,8 +9,8 @@ use database_manager::tables_schema::{
 use diesel::prelude::*;
 use errors::ApiError;
 use paging::*;
-use rocket::request::Form;
 use rocket::http::uri::Uri;
+use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
 use std::collections::HashMap;
 
@@ -30,7 +30,7 @@ pub fn fetch_request_with_head_param(
 ) -> Result<JsonValue, ApiError> {
     let head_param = match head_param {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(head_param.head, &conn)?;
 
@@ -176,14 +176,16 @@ pub fn list_request_with_params(
     params: Option<Form<CertRequestParams>>,
     conn: DbConn,
 ) -> Result<JsonValue, ApiError> {
-
     query_requests(params, conn)
 }
 
-fn query_requests(params: Option<Form<CertRequestParams>>, conn: DbConn) -> Result<JsonValue, ApiError> {
+fn query_requests(
+    params: Option<Form<CertRequestParams>>,
+    conn: DbConn,
+) -> Result<JsonValue, ApiError> {
     let params = match params {
         Some(param) => param.into_inner(),
-        None => Default::default()
+        None => Default::default(),
     };
     let head_block_num: i64 = get_head_block_num(params.head, &conn)?;
     let expand = params.expand.unwrap_or(false);
@@ -281,10 +283,7 @@ fn fetch_expansions(
     factory_ids: &[String],
     standard_ids: &[String],
     head_block_num: i64,
-) -> Result<
-    Expansions,
-    ApiError,
-> {
+) -> Result<Expansions, ApiError> {
     let factory_results: HashMap<String, Organization> = organizations::table
         .filter(organizations::start_block_num.le(head_block_num))
         .filter(organizations::end_block_num.gt(head_block_num))
