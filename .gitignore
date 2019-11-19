@@ -6,7 +6,6 @@
 
 # NPM artifacts and auto-generated files
 client/node_modules
-client/package-lock.json
 client/public/js
 client/src/compiled_protobufs.json
 
