@@ -8,7 +8,6 @@ COPY . .
 
 WORKDIR rest_api
 RUN rustup override set nightly
-RUN rustup install nightly-2019-07-03
 RUN cargo update
 RUN cargo build
 

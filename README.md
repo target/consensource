@@ -1,10 +1,9 @@
-rest-api tested for open source using: rustc 1.31.0-nightly (1cf82fd9c 2018-10-30)
+# ConsenSource &middot; [![Build Status](https://travis-ci.org/target/consensource.svg?branch=master)](https://travis-ci.org/target/consensource)
 
-the rest of the project should run on the stable toolchain
-
-# ConsenSource
 
 ConsenSource is a blockchain application to help verify that products are sourced sustainably from certified factories. Specifically, this application serves as a common platform to verify and display supplier certifications and audit data between standards bodies, certification bodies, and factories. This application runs on Hyperledger Sawtooth, an enterprise blockchain platform.
+
+## Usage
 
 The ConsenSource repository includes several components:
 
@@ -17,16 +16,12 @@ The ConsenSource repository includes several components:
 - Multiple client web apps to give a sample of the interactions each entity may have with the ConsenSource application, including standards bodies, certification bodies, factories and retailers
 
 - A command line interface with basic initial commands to create state objects, including agents, organizations, certificates, standards and accreditations
-
-
-## Usage
-
-This application runs using separate Docker containers for the various components. These Docker images may be run together using the `docker-compose.yaml` file included within the repository.
+  
+The application runs using separate Docker containers for the various components. These Docker images may be run together using the `docker-compose.yaml` file included within the repository.
 
 To run the ConsenSource application, run the following command in the project's root directory:
 
 `docker-compose -f docker-compose.yaml up`
-
 
 Instructions on how to build, run and develop the web client can be found in the [README](https://github.com/target/ConsenSource/blob/master/client/README.md) in the client sub-directory.
 
@@ -83,14 +78,9 @@ The script also provides a `--no-build` option, which tells the script not to re
 
 For further information on ConsenSource, including more details of the components, glossary and FAQs are available in the [ConsenSource Docs](https://pages.github.com/target/ConsenSource/)
 
-## Authors
+## Maintainers
 
 - [Adeeb Ahmed](https://github.com/adeebahmed)
-- [Brijhette Farmer](https://github.com/astrohfiziks)
-- [Darian Plumb](https://github.com/dplumb94)
-- [Eloa Franca Verona](https://github.com/eloaverona)
-- [Emmanuel Meinen](https://github.com/meinenec)
-- [Peter Schwarz](https://github.com/peterschwarz)
+- [Patrick Erichsen](https://github.com/Patrick-Erichsen)
 - [Raphael Santo Domingo](https://github.com/pa3ng)
-- [Sean Quinn](https://github.com/sjqnn)
-- [Shannyn Telander](https://github.com/shannynalayna)
+- [Trevor McDonald](https://github.com/trevormcdonald)
