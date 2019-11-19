@@ -5,7 +5,7 @@ rust:
 before_install:
   # Install ZMQ
   - sudo apt-get update 
-  - sudo apt-get install -y libzmq3-dev unzip protobuf-compiler
+  - sudo apt-get install -y libzmq3-dev unzip protobuf-compiler nodejs npm
   - sudo apt-get clean
   # Install protoc for protoc-rust crate (automate protobuf generation)
   - curl -OLsS https://github.com/google/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip
@@ -19,7 +19,7 @@ before_install:
   - rustup component add rustfmt
   - rustup toolchain install nightly # Nightly needed for rocket rest api
   - rustup component add rustfmt --toolchain nightly
-
+  
 before_script:
   - echo $TRAVIS_COMMIT
   - echo $TRAVIS_TAG
@@ -28,8 +28,13 @@ before_script:
   - echo $TRAVIS_REPO_SLUG
 
 script:
+ # Lint, build client
+  - cd client
+  - npm install
+  - npm run lint
+  - npm run build
   # Lint, build common
-  - cd common
+  - cd ../common
   - cargo fmt -- --check
   - cargo build
   # Lint, build database

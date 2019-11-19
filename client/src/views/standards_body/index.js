@@ -17,7 +17,7 @@ const _authButtons = () => {
     return m('li.nav-item',
       m(`a.nav-link[href=/index_standards_body.html].standards_body_nav_link#sign_out`, {
         onclick: () => {
-          authService.clear()
+          AuthService.clear()
           m.route.set('/')
         }
       }, m('img.nav_icon.mr-1[src=/assets/images/logout-icon.svg]'), 'Log Out'))
