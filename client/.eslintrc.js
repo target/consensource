@@ -5,13 +5,13 @@ module.exports = {
         "es6": true
     },
     "globals": {
-      "Buffer": true
+        "Buffer": true
     },
     "plugins": [
-      "es-beautifier"
+        "es-beautifier"
     ],
     "extends": [
-      "eslint:recommended",
+        "eslint:recommended",
     ],
     "parserOptions": {
         "ecmaVersion": 2016

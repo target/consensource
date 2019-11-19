@@ -5,7 +5,7 @@ const protobuf = require('protobufjs')
 const path = require('path')
 const fs = require('fs')
 
-const proto_dir = '../protos'
+const proto_dir = 'protos'
 
 let root = new protobuf.Root()
 

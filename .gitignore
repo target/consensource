@@ -4,7 +4,7 @@
 **/build
 **/proto
 
-# NPM artifacts
+# NPM artifacts and auto-generated files
 client/node_modules
 client/package-lock.json
 client/public/js
@@ -15,4 +15,3 @@ client/src/compiled_protobufs.json
 **/**/protobuf
 
 rest_api/api_secrets.env
-

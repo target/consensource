@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+message Request {
+    enum Status {
+        UNSET_STATUS = 0;
+        OPEN = 1;
+        IN_PROGRESS = 2;
+        CLOSED = 3;
+        CERTIFIED = 4;
+    }
+
+    // UUID of this request.
+    string id = 1;
+
+    // Status of the request.
+    Status status = 2;
+
+    // The standard the factory is requesting certification against.
+    string standard_id = 3;
+
+    // UUID of the factory that created this request.
+    string factory_id = 4;
+
+    // Time request was made
+    // Format: UTC timestamp
+    uint64 request_date = 5;
+}
+
+message RequestContainer {
+    repeated Request entries = 1;
+}

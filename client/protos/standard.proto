@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+message Standard {
+    message StandardVersion {
+        // Standard version
+        string version = 1;
+
+        // Short description of the standard.
+        string description = 2;
+
+        // Link to the standard's documentation.
+        string link = 3;
+
+        // Date the standard is officially issued.
+        uint64 approval_date = 4;
+    }
+
+    // Sha256 of the standard name
+    string id = 1;
+
+    // Id of the organization that created this Standard.
+    string organization_id = 2;
+
+    // Name of the standard.
+    string name = 3;
+
+    // List of different versions of the standard.
+    repeated StandardVersion versions = 4;
+
+}
+
+message StandardContainer {
+    repeated Standard entries = 1;
+}

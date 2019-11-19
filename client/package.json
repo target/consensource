@@ -1,8 +1,8 @@
 {
-  "name": "cert-registry-client",
+  "name": "consensource-client",
   "version": "0.1.0",
-  "description": "Cert Registry Client",
-  "main": "dist/cert_reg.js",
+  "description": "ConsenSource Client",
+  "main": "dist/retailer.js",
   "scripts": {
     "clean": "rm -f src/compiled_protobufs.json public/js/*.js",
     "compile-protobuf": "node scripts/compile_protobuf.js > src/compiled_protobufs.json",

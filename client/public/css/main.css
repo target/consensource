@@ -1,12 +1,95 @@
-/* Add Target custom font  */
-@font-face { font-family: HelveticaNeueforTarget-RmPl; src: url('/assets/font/HelveticaNeueforTarget-RmPl.otf'); }
-
 #app {
-    font-family: HelveticaNeueforTarget-RmPl, Helvetica !important;
+  font-family: "Open Sans";
 }
 
+.navbar {
+border-radius: 0px;
+}
 
+.landing-page {
+position: fixed;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+max-height: 100%;
+padding-top: 75px;
+max-width: 100%;
+margin: auto;
+overflow: auto;
+}
 
+.landing-page-info {
+width: 35vw;
+height: 80vh;
+word-wrap: break-word;
+color: white;
+margin: 50px 0px 0px 30px;
+padding-bottom: 302px;
+font-weight: 100;
+font-size: 24px;
+}
+
+.landing-page-info-section {
+margin-bottom: 30px;
+}
+
+.landing-page-info-header > strong {
+font-weight: bold;
+}
+
+.landing-page-factory {
+background: url('/assets/images/factory-landing-page.svg') no-repeat center center fixed;
+background-size: cover;
+}
+
+.landing-page-retailer {
+background: url('/assets/images/retailer-landing-page.svg') no-repeat center center fixed;
+background-size: cover;
+}
+
+.landing-page-auditor {
+background: url('/assets/images/auditor-landing-page.svg') no-repeat center center fixed;
+background-size: cover;
+}
+
+.landing-page-standards-body {
+background: url('/assets/images/standards-body-landing-page.svg') no-repeat center center fixed;
+background-size: cover;
+}
+
+.landing-page-action-btn {
+width: 100%;
+font-size: 24px;
+}
+
+.landing-page-retailer .landing-page-action-btn, 
+.landing-page-retailer .landing-page-action-btn:hover {
+color: #50c37c;
+}
+
+.landing-page-factory .landing-page-action-btn, 
+.landing-page-factory .landing-page-action-btn:hover {
+color: #0088f5;
+}
+
+.landing-page-auditor .landing-page-action-btnn, 
+.landing-page-auditor .landing-page-action-btn:hover {
+color: #86A588;
+}
+
+.landing-page-standards-body .landing-page-action-btn, 
+.landing-page-standards-body .landing-page-action-btn:hover {
+color: #3fc2cd;
+}
+
+.landing-page-info-header {
+font-size: 36px;
+}
+
+.landing-page-info-section {
+padding-bottom: 30px;
+}
 /* Override mithril-datepicker default styling */
 
 .mithril-date-picker *, .mithril-date-picker button {
@@ -33,31 +116,31 @@
 
 /* Navbar styling  */
 nav.navbar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 1030;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
 }
 
 .org-logo {
- width: 55px;
- height: 55px;
- left: 7px;
- top: 7px;
- position: relative;
+width: 55px;
+height: 55px;
+left: 7px;
+top: 7px;
+position: relative;
 }
 
 .logo-circle {
-  height: 70px;
-  width: 70px;
-  background-color: #f7f7f7;
-  border-radius: 50%;
-  display: inline-block;
+height: 70px;
+width: 70px;
+background-color: #f7f7f7;
+border-radius: 50%;
+display: inline-block;
 }
 
 .org-brand {
-    height: 100px;
+  height: 100px;
 }
 
 main.container {
@@ -66,6 +149,7 @@ main.container {
 
 #app  > nav.navbar-light {
   background: #ffffff !important;
+  margin-bottom: 0px;
 }
 
 
@@ -78,6 +162,19 @@ main.container {
 }
 
 .retailer_nav_link.active > span.nav_label {
+    color: #4a4a4a !important;
+    border-bottom: solid 2px #4a4a4a !important;
+}
+
+#app  > nav > div > ul > li > .standards_body_nav_link {
+  font-size: 14px !important;
+  font-weight: normal;
+  margin-left: 40px;
+  letter-spacing: normal;
+  color: #888888;
+}
+
+.standards_body_nav_link.active > span.nav_label {
     color: #4a4a4a !important;
     border-bottom: solid 2px #4a4a4a !important;
 }
