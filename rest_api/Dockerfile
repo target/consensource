@@ -1,14 +1,9 @@
-FROM rust:latest
+FROM target/consensource:rust-nightly
 
-RUN apt-get update && apt-get install -y unzip libzmq3-dev protobuf-compiler
-
-WORKDIR /project/consensource
+RUN apt-get update && apt-get install -y unzip libzmq3-dev protobuf-compiler wget
 
 COPY . .
-
 WORKDIR rest_api
-RUN rustup override set nightly
 RUN cargo update
 RUN cargo build
-
-ENV PATH=$PATH:/project/consensource/rest_api/target/debug/
+ENV PATH=$PATH:/rest_api/target/debug/
