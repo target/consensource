@@ -1,6 +1,6 @@
 # Client
 
-The ConsenSource UI is comprised of a number of Mithril applications under the same router. The default application that is served from the `index.html` page is for retailers. To access the other apps, specify the relative .html file in [/public](/public) such as `localhost:8080/index_auditor.html`.
+The ConsenSource UI is comprised of a number of Mithril applications under the same router. The default application that is served from the `index.html` page is for retailers. To access the other apps, specify the relative .html file in [/public](/client/public) such as `localhost:8080/index_auditor.html`.
 
 ## Env Setup
 
