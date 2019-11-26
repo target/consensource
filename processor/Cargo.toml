@@ -9,9 +9,9 @@ protobuf = "2.8.1"
 cfg-if = "0.1"
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-sabre-sdk = "0.1"
+sabre-sdk = "0.2"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-sawtooth-sdk = "0.1"
+sawtooth-sdk = "0.2"
 log = "0.4"
 log4rs = "0.8"

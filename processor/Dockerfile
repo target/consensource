@@ -1,6 +1,7 @@
-FROM target/consensource:build_agent
+FROM target/consensource:rust-nightly
 
 COPY . .
-
 WORKDIR processor
-RUN cargo build
+RUN cargo update
+RUN cargo +nightly build
+ENV PATH=$PATH:/processor/target/debug/
