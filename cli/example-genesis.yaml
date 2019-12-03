@@ -1,27 +1,20 @@
-- email: "agent001@example.com"
+- email: "paper-agent@example.com"
   organization:
-      name: "FSC"
+      name: "Paper Standards Body"
       type: StandardsBody
       contact:
-          name: John Q. Standards
+          name: John Q. Paper
           phone_number: 123-456-7890
           language: en
       standards:
-          - name: FSC-C
+          - name: High Qualility Paper Standard
             version: "1.0"
             description: |
-                FSC Chain of Custody Certification
-            link: https://ic.fsc.org/en/document-center/id/80
-            approval_date: 2017/04/01
-          - name: FSC-N
-            version: "1.0"
-            description: |
-                Forest Management Certification
-            link: https://ic.fsc.org/file-download.fsc-and-plantations.a-1723.pdf
-            approval_date: 2017/04/01
-- email: "agent002@example.com"
+                Standard around high quality paper products
+            approval_date: 2019/11/11
+- email: "paper-agent2@example.com"
   organization:
-      name: Rainforest Alliance
+      name: Cardboard Certifying Body
       type: CertifyingBody
       contact:
           name: Jane Forest
