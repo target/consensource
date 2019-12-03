@@ -157,7 +157,6 @@ mod tests {
     use sawtooth_sdk::signing::{CryptoFactory, Signer};
     use std::time::{SystemTime, UNIX_EPOCH};
 
-    use common::addressing;
     use common::proto::payload::{
         CertificateRegistryPayload, CertificateRegistryPayload_Action, CreateAgentAction,
     };

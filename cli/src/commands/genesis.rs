@@ -208,7 +208,7 @@ fn create_org_batches<'s>(
 
 fn store_key(
     signer: &signing::Signer,
-    private_key: &signing::PrivateKey,
+    private_key: &dyn signing::PrivateKey,
     user_identifier: &str,
     key_dir: &str,
 ) -> Result<(), CliError> {

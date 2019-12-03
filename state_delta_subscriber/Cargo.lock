@@ -822,7 +822,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "state_delta_subscriber"
+name = "state-delta-subscriber"
 version = "0.1.0"
 dependencies = [
  "clap 2.33.0 (registry+https://github.com/rust-lang/crates.io-index)",

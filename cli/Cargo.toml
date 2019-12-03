@@ -7,8 +7,6 @@ authors = ["Target"]
 name = "creg"
 path = "src/main.rs"
 
-cargo-features = ["rename-dependency"]
-
 [dependencies]
 clap = "2"
 futures = "0.1"
