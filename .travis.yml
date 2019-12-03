@@ -32,7 +32,7 @@ script:
   - cd client
   - npm install
   - npm run lint
-  - npm run build
+  - npm run build-dev
   # Lint, build common
   - cd ../common
   - cargo fmt -- --check

@@ -9,7 +9,7 @@ The ConsenSource UI is comprised of a number of Mithril applications under the s
 ## Building
 
   - `npm install`
-  - `npm run build`
+  - `npm run build-dev`
 
 ## Development
 
