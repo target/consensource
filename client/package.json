@@ -7,8 +7,10 @@
     "clean": "rm -f src/compiled_protobufs.json public/js/*.js",
     "compile-protobuf": "node scripts/compile_protobuf.js > src/compiled_protobufs.json",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run compile-protobuf && mkdir -p ./public/js && webpack",
-    "watch": "npm run compile-protobuf && mkdir -p ./public/js && webpack --watch --progress --mode=development",
+    "build-dev": "npm run compile-protobuf && mkdir -p ./public/js && webpack --env.ENVIRONMENT=development",
+    "build-stage": "npm run compile-protobuf && mkdir -p ./public/js && webpack --env.ENVIRONMENT=stage",
+    "build-prod": "npm run compile-protobuf && mkdir -p ./public/js && webpack --env.ENVIRONMENT=production",
+    "watch": "npm run compile-protobuf && mkdir -p ./public/js && webpack --watch --progress --mode=development --env.ENVIRONMENT=development",
     "lint": "eslint src",
     "format": "eslint --fix src"
   },

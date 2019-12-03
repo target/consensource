@@ -6,7 +6,7 @@ COPY . /client/
 
 RUN cd /client \
     && npm install \
-    && npm run build
+    && npm run build-dev
 
 FROM httpd:2.4-alpine
 
