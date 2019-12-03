@@ -66,7 +66,7 @@ services:
           sawtooth.consensus.algorithm.name=Devmode \
           sawtooth.consensus.algorithm.version=0.1 \
           -o config.batch \
-          && sawadm genesis config-genesis.batch config.batch && \
+          && sawadm genesis config-genesis.batch config.batch /shared_data/creg-genesis.batch && \
         sawtooth-validator -v \
           --endpoint tcp://validator:8800 \
           --bind component:tcp://eth0:4004 \
