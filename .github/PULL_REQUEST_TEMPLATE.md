@@ -15,6 +15,3 @@ What types of changes is this pull request introducing to ConsenSource? _Put an 
 
 Please include instructions on how to run/test your contribution. Tests are welcomed!
 Disregard this if your contribution is less technical (little to no code)
-
-
-- [Example PR](https://github.com/target/consensource/pull/29)
