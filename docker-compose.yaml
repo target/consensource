@@ -97,7 +97,7 @@ services:
       ROCKET_PORT: "9009"
     command: |
       bash -c "
-        cert-registry-rest-api -v --dbhost postgres -C tcp://validator:4004
+        consensource-rest-api -v --dbhost postgres -C tcp://validator:4004
       "
 
   settings-tp:

@@ -1,5 +1,5 @@
 [package]
-name = "cert-registry-rest-api"
+name = "consensource-rest-api"
 version = "0.1.0"
 
 
