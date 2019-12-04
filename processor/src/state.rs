@@ -213,7 +213,7 @@ impl<'a> CertState<'a> {
             .find(|(_i, agent)| agent.public_key == agent_public_key)
         {
             // If that agent already exists, set agents_slice to that agent
-            let mut agent_slice = agents.entries.as_mut_slice();
+            let agent_slice = agents.entries.as_mut_slice();
             agent_slice[i] = agent;
         } else {
             // Push new and unique agent to the AgentContainer
@@ -263,7 +263,7 @@ impl<'a> CertState<'a> {
             .find(|(_i, organization)| organization.id == organization_id)
         {
             // If that organization already exists, set organization_slice to that organization
-            let mut organization_slice = organizations.entries.as_mut_slice();
+            let organization_slice = organizations.entries.as_mut_slice();
             organization_slice[i] = organization;
         } else {
             // Push new and unique organization to the OrganizationContainer
@@ -313,7 +313,7 @@ impl<'a> CertState<'a> {
             .find(|(_i, certificate)| certificate.id == certificate_id)
         {
             // If that certificate already exists, set certificate_slice to that certificate
-            let mut certificate_slice = certificates.entries.as_mut_slice();
+            let certificate_slice = certificates.entries.as_mut_slice();
             certificate_slice[i] = certificate;
         } else {
             // Push new and unique certificate to the CertificateContainer
@@ -361,7 +361,7 @@ impl<'a> CertState<'a> {
             .find(|(_i, request)| request.id == request_id)
         {
             // If that request already exists, set requests_slice to that request
-            let mut request_slice = requests.entries.as_mut_slice();
+            let request_slice = requests.entries.as_mut_slice();
             request_slice[i] = request;
         } else {
             // Push new and unique request to the RequestContainer
@@ -411,7 +411,7 @@ impl<'a> CertState<'a> {
             .find(|(_i, standard)| standard.id == standard_id)
         {
             // If that request already exists, set requests_slice to that request
-            let mut standard_slice = standards.entries.as_mut_slice();
+            let standard_slice = standards.entries.as_mut_slice();
             standard_slice[i] = standard;
         } else {
             // Push new and unique request to the StandardContainer
