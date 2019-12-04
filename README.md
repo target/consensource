@@ -1,6 +1,5 @@
 # ConsenSource &middot; [![Build Status](https://travis-ci.org/target/consensource.svg?branch=master)](https://travis-ci.org/target/consensource)
 
-
 ConsenSource is a blockchain application to help verify that products are sourced sustainably from certified factories. Specifically, this application serves as a common platform to verify and display supplier certifications and audit data between standards bodies, certification bodies, and factories. This application runs on Hyperledger Sawtooth, an enterprise blockchain platform.
 
 ## Usage
@@ -16,7 +15,7 @@ The ConsenSource repository includes several components:
 - Multiple client web apps to give a sample of the interactions each entity may have with the ConsenSource application, including standards bodies, certification bodies, factories and retailers
 
 - A command line interface with basic initial commands to create state objects, including agents, organizations, certificates, standards and accreditations
-  
+
 The application runs using separate Docker containers for the various components. These Docker images may be run together using the `docker-compose.yaml` file included within the repository.
 
 To run the ConsenSource application, run the following command in the project's root directory:
@@ -28,16 +27,19 @@ Instructions on how to build, run and develop the web client can be found in the
 Each client application provides functionality depending on the entity, based on their unique interactions with the common platform. The following section provides the default URL for each client application and their associated functionality:
 
 - Retailer Client: http://localhost:8080/
+
   - Serves as an example to information available to Target sourcing members
   - View factories and their associated contact, location, and certification information
   - View agents and, if applicable, associated organization and contact information
 
 - Factory Client: http://localhost:8080/index_factory.html
+
   - Open certification requests
   - View history of granted certifications
   - Update any address or contact information
 
 - Standards Body Client: http://localhost:8080/index_standards_body.html
+
   - View, create, and update standards
   - Accredit certifying bodies to issue certificates
 
@@ -58,7 +60,6 @@ Other available endpoints include:
 
 Refer to the [REST API specification document](https://github.com/target/ConsenSource/blob/master/docs_content/rest-api/specs.yaml) for further information on available endpoints
 
-
 ## Testing
 
 Docker based integration tests are available for the application. In order to execute the tests, run the following command in the project's root directory:
@@ -73,6 +74,10 @@ The script also provides a `--no-build` option, which tells the script not to re
 
 `./bin/run-tests --no-build processor`
 
+## Identity Provider Integration
+
+The REST API allows for integration with an OAuth 2.0/OpenID Connect setup. Specify the url of the OAuth
+service in the `docker-compose.yaml` file in the `rest-api` service under `environment` variables to use.
 
 ## Further information
 
