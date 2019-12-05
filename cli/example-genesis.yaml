@@ -1,4 +1,4 @@
-- email: "paper-agent@example.com"
+- email: "standards-body1@example.com"
   organization:
       name: "Paper Standards Body"
       type: StandardsBody
@@ -7,16 +7,207 @@
           phone_number: 123-456-7890
           language: en
       standards:
-          - name: High Qualility Paper Standard
-            version: "1.0"
-            description: |
-                Standard around high quality paper products
-            approval_date: 2019/11/11
-- email: "paper-agent2@example.com"
+        - name: High Qualility Paper Standard
+          version: "1.0"
+          link: "https://example-standard.com/paper-standard"
+          description: |
+              Standard around high quality paper products
+          approval_date: 2019/11/11
+- email: "standards-body2@example.com"
   organization:
-      name: Cardboard Certifying Body
+      name: "Leather Standards Body"
+      type: StandardsBody
+      contact:
+          name: Larry Leather
+          phone_number: 304-843-3548
+          language: en
+      standards:
+        - name: Genuine Leather standard
+          version: "1.0"
+          link: "https://example-standard.com/leather-standard"
+          description: |
+              Standard around genuine leather products
+          approval_date: 2019/11/12
+- email: "standards-body3@example.com"
+  organization:
+      name: "Fair Labor Standards Body"
+      type: StandardsBody
+      contact:
+          name: Frank Fairness
+          phone_number: 123-456-7890
+          language: en
+      standards:
+        - name: Fair Labor Standard
+          version: "1.0"
+          link: "https://example-standard.com/fair-labor"
+          description: |
+              Standard around products that were created using fair labor practices
+          approval_date: 2019/11/13
+- email: "certifying-body1@example.com"
+  organization:
+      name: Paper Certifying Body
       type: CertifyingBody
       contact:
           name: Jane Forest
+          phone_number: 942-349-4031
+          language: en
+- email: "certifying-body2@example.com"
+  organization:
+      name: Leather Certifying Body
+      type: CertifyingBody
+      contact:
+          name: Lionel Leather
+          phone_number: 246-734-0124
+          language: en
+- email: "certifying-body3@example.com"
+  organization:
+      name: Fair Labor Certifying Body
+      type: CertifyingBody
+      contact:
+          name: Fanny Fair
+          phone_number: 037-348-4310
+          language: en
+- email: "factory1@example.com"
+  organization:
+      name: Paper Factory
+      type: Factory
+      contact:
+          name: Patrick Papier
           phone_number: 987-654-3210
           language: en
+      address:
+          street_1: 120 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory2@example.com"
+  organization:
+      name: Cotton Factory
+      type: Factory
+      contact:
+          name: Carl Cottonball
+          phone_number: 789-456-1230
+          language: en
+      address:
+          street_1: 121 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory3@example.com"
+  organization:
+      name: Notebook Factory
+      type: Factory
+      contact:
+          name: Joe Binder
+          phone_number: 987-324-5648
+          language: en
+      address:
+          street_1: 122 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+          language: en
+- email: "factory4@example.com"
+  organization:
+      name: Cardboard Factory
+      type: Factory
+      contact:
+          name: Sally Box
+          phone_number: 324-654-3574
+          language: en
+      address:
+          street_1: 123 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory5@example.com"
+  organization:
+      name: Shoe Factory
+      type: Factory
+      contact:
+          name: Sam Sneakers
+          phone_number: 035-987-6544
+          language: en
+      address:
+          street_1: 124 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory6@example.com"
+  organization:
+      name: Jacket Factory
+      type: Factory
+      contact:
+          name: Jack Jacket
+          language: en
+          phone_number: 657-324-7498
+      address:
+          street_1: 125 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+          language: en
+- email: "factory7@example.com"
+  organization:
+      name: Shirt Factory
+      type: Factory
+      contact:
+          name: Sal Shirt
+          phone_number: 543-645-9657
+          language: en
+      address:
+          street_1: 126 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory8@example.com"
+  organization:
+      name: Pant Factory
+      type: Factory
+      contact:
+          name: Patrisha Pant
+          phone_number: 732-716-3546
+          language: en
+      address:
+          street_1: 127 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory9@example.com"
+  organization:
+      name: Suit Factory
+      type: Factory
+      contact:
+          name: Sabrina Suit
+          phone_number: 324-986-3546
+          language: en
+      address:
+          street_1: 128 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+- email: "factory0@example.com"
+  organization:
+      name: Dress Factory
+      type: Factory
+      contact:
+          name: Dan Dress
+          phone_number: 423-665-9972
+          language: en
+      address:
+          street_1: 129 Sustainability Lane
+          city: Minneapolis
+          state_province: Minnesota
+          postal_code: "55403"
+          country: USA
+        
+        
