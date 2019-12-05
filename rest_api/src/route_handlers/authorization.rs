@@ -1,4 +1,4 @@
-use bcrypt::{hash, verify, BcryptError, DEFAULT_COST};
+use bcrypt::{hash, verify, BcryptError};
 use rocket_contrib::json::{Json, JsonValue};
 
 use database::DbConn;
@@ -7,6 +7,7 @@ use database_manager::tables_schema::users;
 use diesel;
 use diesel::prelude::*;
 use errors::ApiError;
+use jwt;
 
 #[derive(Deserialize)]
 pub struct UserCreate {
@@ -29,7 +30,11 @@ pub struct UserCreate {
 }
 
 #[post("/users", format = "application/json", data = "<payload>")]
-pub fn create_user(payload: Json<UserCreate>, conn: DbConn) -> Result<JsonValue, ApiError> {
+pub fn create_user(
+    payload: Json<UserCreate>,
+    _claims: jwt::JWT,
+    conn: DbConn,
+) -> Result<JsonValue, ApiError> {
     let user_create = payload.0;
     if find_user_by_username(&conn, &user_create.username)?.is_some() {
         Err(ApiError::BadRequest(
@@ -158,7 +163,7 @@ fn save_password_change(
 
 /// Returns a BCrypt-hashed password
 fn hash_password(password: &str) -> Result<String, ApiError> {
-    hash(password, DEFAULT_COST).map_err(ApiError::from)
+    hash(password, 4).map_err(ApiError::from)
 }
 
 impl From<BcryptError> for ApiError {

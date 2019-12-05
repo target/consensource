@@ -95,6 +95,7 @@ services:
     environment:
       ROCKET_ADDRESS: "0.0.0.0"
       ROCKET_PORT: "9009"
+      # OAUTH_VALIDATION_URL: "https://some-identity-provider.tld"
     command: |
       bash -c "
         consensource-rest-api -v --dbhost postgres -C tcp://validator:4004

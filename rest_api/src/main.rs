@@ -35,18 +35,21 @@ extern crate hyper_sse;
 
 mod database;
 mod errors;
+mod fairings;
+mod jwt;
 mod paging;
 mod route_handlers;
 
 use database::init_pool;
+use fairings::CORS;
 use log::LevelFilter;
 use log4rs::append::console::ConsoleAppender;
 use log4rs::config::{Appender, Config, Root};
 use log4rs::encode::pattern::PatternEncoder;
 use rocket::response::NamedFile;
 use route_handlers::{
-    agents, authorization, blockchain, blocks, certificates, factories, organizations, requests,
-    standards, standards_body,
+    agents, authorization, blockchain, blocks, certificates, cors, factories, health,
+    organizations, requests, standards, standards_body,
 };
 use std::path::{Path, PathBuf};
 use std::{env, io, process};
@@ -159,6 +162,9 @@ fn main() {
         .mount(
             "/api",
             routes![
+                cors::cors_users_route,
+                cors::cors_users_auth_route,
+                cors::cors_batches_route,
                 agents::fetch_agent,
                 agents::fetch_agent_with_head_param,
                 agents::list_agents,
@@ -176,6 +182,7 @@ fn main() {
                 factories::fetch_factory_with_head_param,
                 factories::list_factories,
                 factories::list_factories_params,
+                health::check,
                 requests::fetch_request,
                 requests::fetch_request_with_head_param,
                 requests::list_requests,
@@ -194,6 +201,7 @@ fn main() {
             ],
         )
         .mount("/", routes![index, files])
+        .attach(CORS())
         .launch();
 
     watcher_thread.join().unwrap();
