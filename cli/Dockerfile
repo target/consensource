@@ -1,4 +1,4 @@
-FROM target/consensource:build_agent
+FROM rust:1.30
 
 # Need sawtooth-sdk to create keys
 RUN echo "deb http://repo.sawtooth.me/ubuntu/1.0/stable xenial universe" >> /etc/apt/sources.list \
@@ -7,12 +7,23 @@ RUN echo "deb http://repo.sawtooth.me/ubuntu/1.0/stable xenial universe" >> /etc
       python3-sawtooth-sdk \
       python3-sawtooth-cli \
       unzip \
+      libzmq3-dev \
+      protobuf-compiler \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-COPY . .
+# Install protoc library
+RUN curl -OLsS https://github.com/google/protobuf/releases/download/v3.5.1/protoc-3.5.1-linux-x86_64.zip \
+    && unzip protoc-3.5.1-linux-x86_64.zip -d protoc3 \
+    && rm protoc-3.5.1-linux-x86_64.zip
 
+COPY common /common
+COPY protos /protos
+COPY common /common
+RUN cd /common && rustup default stable && cargo build
+
+COPY cli /cli
 WORKDIR cli
-RUN cargo build
+RUN rustup default stable && cargo build
 
-ENV PATH=$PATH:/project/consensource/cli/target/debug/
+ENV PATH=$PATH:target/debug/
