@@ -68,10 +68,10 @@ fn main() {
 }
 
 fn parse_args<'a>() -> ArgMatches<'a> {
-    let app = clap_app!(creg =>
+    let app = clap_app!(csrc =>
         (name: APP_NAME)
         (version: VERSION)
-        (about: "Certification Registry CLI")
+        (about: "Consensource CLI")
         (@setting SubcommandRequiredElseHelp)
         (@subcommand agent =>
             (about: "manage the agent")
@@ -95,7 +95,7 @@ fn parse_args<'a>() -> ArgMatches<'a> {
             (about: "Generate batches in order to bootstrap a genesis block")
             (@arg dry_run: --("dry-run")
              "Processes the input and generates the transactions, but does not generate the output")
-            (@arg output: -o --output +takes_value default_value("creg-genesis.batch")
+            (@arg output: -o --output +takes_value default_value("consensource-genesis.batch")
              "Output file for the resulting batches")
             (@arg descriptor: -g --("genesis-descriptor") +takes_value default_value("genesis.yaml")
              "The genesis descriptor yaml file")

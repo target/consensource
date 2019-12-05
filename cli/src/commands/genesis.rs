@@ -80,7 +80,9 @@ pub fn run<'a>(args: &ArgMatches<'a>) -> Result<(), CliError> {
     let context = signing::create_context("secp256k1")?;
     let factory = signing::CryptoFactory::new(&*context);
 
-    let output_file = args.value_of("output").unwrap_or("creg-genesis.batch");
+    let output_file = args
+        .value_of("output")
+        .unwrap_or("consensource-genesis.batch");
     let generated_keys_dir = args.value_of("keys_directory");
     let genesis_descriptor = args.value_of("descriptor").unwrap_or("genesis.yaml");
 

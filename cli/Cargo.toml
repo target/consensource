@@ -1,10 +1,10 @@
 [package]
-name = "creg"
+name = "consensource-cli"
 version = "0.1.0"
 authors = ["Target"]
 
 [[bin]]
-name = "creg"
+name = "csrc"
 path = "src/main.rs"
 
 [dependencies]

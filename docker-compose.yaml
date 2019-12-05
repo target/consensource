@@ -7,7 +7,13 @@ services:
   cli:
     image: target/consensource:cli
     container_name: consensource-cli
+    build:
+      context: .
+      dockerfile: ./cli/Dockerfile
     volumes:
+      ## This prevents us from having to rebuild the CLI
+      ## whenever we want to update the example-genesis.yaml
+      - ./cli/example-genesis.yaml:/example-genesis.yaml 
       - consensource-shared-data:/shared_data
     entrypoint: |
       bash -c "
@@ -15,7 +21,7 @@ services:
           sawtooth keygen
         fi;
         mkdir -p /shared_data/keys && \
-          creg genesis -o /shared_data/creg-genesis.batch -K /shared_data/keys \
+          csrc genesis -o /shared_data/consensource-genesis.batch -K /shared_data/keys \
               -g /example-genesis.yaml;
         tail -f /dev/null
       "
@@ -66,7 +72,7 @@ services:
           sawtooth.consensus.algorithm.name=Devmode \
           sawtooth.consensus.algorithm.version=0.1 \
           -o config.batch \
-          && sawadm genesis config-genesis.batch config.batch /shared_data/creg-genesis.batch && \
+          && sawadm genesis config-genesis.batch config.batch /shared_data/consensource-genesis.batch && \
         sawtooth-validator -v \
           --endpoint tcp://validator:8800 \
           --bind component:tcp://eth0:4004 \
