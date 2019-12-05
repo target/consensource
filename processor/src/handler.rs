@@ -1209,7 +1209,7 @@ fn apply(request: &TpProcessRequest, context: &mut TransactionContext) -> Result
     }
 }
 
-#[allow(dead_code, private_no_mangle_fns)]
+#[allow(dead_code)]
 #[cfg(target_arch = "wasm32")]
 #[no_mangle]
 pub unsafe fn entrypoint(payload: WasmPtr, signer: WasmPtr, signature: WasmPtr) -> i32 {

@@ -1,14 +1,16 @@
 [package]
-name = "cert-registry-rest-api"
+name = "consensource-rest-api"
 version = "0.1.0"
 
 
 [dependencies]
+alcoholic_jwt = "1.0.0"
 bcrypt = "0.2"
 clap = "2"
 database = { path = "../database" }
 diesel = { version = "1.0.0", features = ["postgres", "r2d2"] }
 protobuf = "2.8.1"
+reqwest = "0.9.22"
 rocket = "0.4.2"
 rocket_contrib = "0.4.2"
 sawtooth-sdk = "0.2"

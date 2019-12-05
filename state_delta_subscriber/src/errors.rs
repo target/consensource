@@ -31,7 +31,7 @@ impl std::error::Error for SubscriberError {
         }
     }
 
-    fn cause(&self) -> Option<&std::error::Error> {
+    fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             SubscriberError::ConnError(_) => None,
             SubscriberError::EventParseError(_) => None,

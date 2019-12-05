@@ -125,7 +125,7 @@ impl EventHandler {
         let address_type = get_address_type(state.get_address());
         match address_type {
             AddressSpace::Organization => {
-                let mut org_container: organization::OrganizationContainer =
+                let org_container: organization::OrganizationContainer =
                     Self::unpack_data(state.get_value());
 
                 let transaction =
@@ -133,28 +133,27 @@ impl EventHandler {
                 Ok(transaction)
             }
             AddressSpace::Agent => {
-                let mut agent_container: agent::AgentContainer =
-                    Self::unpack_data(state.get_value());
+                let agent_container: agent::AgentContainer = Self::unpack_data(state.get_value());
                 let transaction =
                     OperationType::CreateAgent(agent_container.to_models(block.block_num));
                 Ok(transaction)
             }
             AddressSpace::Certificate => {
-                let mut cert_container: certificate::CertificateContainer =
+                let cert_container: certificate::CertificateContainer =
                     Self::unpack_data(state.get_value());
                 let transaction =
                     OperationType::CreateCertificate(cert_container.to_models(block.block_num));
                 Ok(transaction)
             }
             AddressSpace::Request => {
-                let mut request_container: request::RequestContainer =
+                let request_container: request::RequestContainer =
                     Self::unpack_data(state.get_value());
                 let transaction =
                     OperationType::CreateRequest(request_container.to_models(block.block_num));
                 Ok(transaction)
             }
             AddressSpace::Standard => {
-                let mut standard_container: standard::StandardContainer =
+                let standard_container: standard::StandardContainer =
                     Self::unpack_data(state.get_value());
                 let transaction =
                     OperationType::CreateStandard(standard_container.to_models(block.block_num));

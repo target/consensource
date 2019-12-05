@@ -42,7 +42,7 @@ impl std::error::Error for DatabaseError {
         }
     }
 
-    fn cause(&self) -> Option<&std::error::Error> {
+    fn cause(&self) -> Option<&dyn std::error::Error> {
         match *self {
             DatabaseError::ConnError(ref err) => Some(err),
             DatabaseError::TransactionError(ref err) => Some(err),
