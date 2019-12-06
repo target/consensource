@@ -4,6 +4,28 @@ volumes:
   consensource-shared-data:
 
 services:
+  consensource-contract-builder:
+    image: consensource-contract-builder
+    container_name: consensource-contract-builder
+    build:
+      context: .
+      dockerfile: processor/Dockerfile.sabre
+    volumes:
+      - consensource-shared-data:/shared_data
+    entrypoint: |
+      bash -c "
+        while true; do curl -s http://sawtooth-rest-api:8008/state | grep -q head; if [ $$? -eq 0 ]; then break; fi; sleep 0.5; done;
+        sabre cr --create consensource --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre upload --filename product.yaml --key /grid-shared/my_key --url http://sawtooth-rest-api:8008 --wait 30
+        sabre ns --create cad11d --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre ns --create 621dee01 --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre ns --create 621dee02 --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre perm cad11d consensource --key /shared_data/my_key --read --write --url http://sawtooth-rest-api:8008 --wait 30
+        sabre perm 621dee01 consensource --key /shared_data/my_key --read --url http://sawtooth-rest-api:8008 --wait 30
+        sabre perm 621dee02 consensource --key /shared_data/my_key --read --write --url http://sawtooth-rest-api:8008 --wait 30
+        echo '---------========= consensource contract is loaded =========---------'
+      "
+
   cli:
     image: target/consensource:cli
     container_name: consensource-cli
@@ -60,6 +82,7 @@ services:
       bash -c "
         sawadm keygen && \
           sawtooth keygen my_key && \
+          cp /root/.sawtooth/keys/my_key.* /shared_data && \
           sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
           sawset proposal create \
           -k /root/.sawtooth/keys/my_key.priv \
