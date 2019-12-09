@@ -155,5 +155,5 @@ services:
       dockerfile: ./state_delta_subscriber/Dockerfile
     command: |
       bash -c "
-        state-delta-subscriber --dbhost postgres -v -C tcp://validator:4004
+        consensource-sds --dbhost postgres -v -C tcp://validator:4004
       "
