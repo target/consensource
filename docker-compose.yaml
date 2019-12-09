@@ -122,7 +122,7 @@ services:
       dockerfile: ./processor/Dockerfile
     command: |
       bash -c "
-        cert-registry-processor -v -C tcp://validator:4004
+        consensource-processor -v -C tcp://validator:4004
       "
 
   postgres:

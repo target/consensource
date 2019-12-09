@@ -42,7 +42,7 @@ services:
       - cargo-registry:/root/.cargo/registry
     command: |
       bash -c "
-        target/debug/cert-registry-processor -v -C tcp://validator:4004
+        target/debug/consensource-processor -v -C tcp://validator:4004
       "
 
   test-runner:
