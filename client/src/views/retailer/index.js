@@ -75,7 +75,7 @@ const Welcome = {
             m('li', 'View important certifications, licenses, and contact information for each retailer'),
             m('li', 'Rest assured that both past and current data are accurate, verified, and up-to-date')
           ]),
-          m('button.btn.landing-page-action-btn', 'Start the search for certified factories')
+          m('a.btn.landing-page-action-btn[href=/certifications]', { oncreate: m.route.link }, 'Create a new standard'),
         ])
       ])
     ],

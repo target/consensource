@@ -2,7 +2,7 @@
 
 const m = require('mithril')
 const agentService = require('App/services/agent')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const factoryService = require('App/services/factory')
 const transactionService = require('App/services/transaction')
 const { inputField, languageSelector } = require('App/components/forms')
@@ -230,7 +230,7 @@ const FactoryDetails = {
   },
   oninit: (vnode) => {
     vnode.state.loading = true
-    return authService.getUserData()
+    return AuthService.getUserData()
       .then((user) => Promise.all([
         user,
         agentService.fetchAgent(user.public_key)
@@ -318,7 +318,7 @@ const FactorySignUp = {
 
   submit: () => {
     FactorySignUp.submitting = true
-    authService.createUser(FactorySignUp,
+    AuthService.createUser(FactorySignUp,
       (signer) =>
         transactionService.submitBatch([
           agentService.createAgentTransaction(FactorySignUp.agentName, signer),
@@ -471,7 +471,7 @@ const FactoryUpdate = {
 
   submit: () => {
     FactoryUpdate.submitting = true
-    authService.getSigner()
+    AuthService.getSigner()
       .then((signer) => factoryService.updateFactory(FactoryUpdate, signer))
       .then(() => {
         FactoryUpdate.submitting = false
@@ -529,9 +529,9 @@ const PasswordUpdate = {
 
   submit: () => {
     PasswordUpdate.submitting = true
-    authService.getSigner()
+    AuthService.getSigner()
       .then((signer) => {
-        authService.updateUser(PasswordUpdate, signer)
+        AuthService.updateUser(PasswordUpdate, signer)
       })
       .then(() => {
         PasswordUpdate.submitting = false

@@ -120,7 +120,7 @@ const Welcome = {
             m('li', 'Search a list of factories that have been audited and certified'),
             m('li', 'Rest assured that both past and current date are accurate and up-to-date')
           ]),
-          m('button.btn.landing-page-action-btn', 'Audit and certify a new factory')
+          m('a.btn.landing-page-action-btn', { href: `${AuthService.isSignedIn() ? '/organizationCreate' : '/signIn'}`, oncreate: m.route.link }, 'Audit and certify a new factory'),
         ])
       ])
     ],

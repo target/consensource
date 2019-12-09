@@ -1,7 +1,7 @@
 'use strict'
 
 const m = require('mithril')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const agentService = require('App/services/agent')
 const modals = require('App/components/modals')
 const { AuthedComponent } = require('App/views/common/auth')
@@ -9,17 +9,16 @@ const { AuthedComponent } = require('App/views/common/auth')
 
 const _navLink = (route, asset_active, asset_inactive, label) =>
   m('li.nav-item.retailer_nav',
-
     m(`a.nav-link.retailer_nav_link[href=${route}]`,
       { class: m.route.get() === route ? 'active' : '', oncreate: m.route.link },
       [m(`img.nav_icon[src=/assets/images/${m.route.get() === route ? asset_active : asset_inactive}]`), m('span.nav_label.p-1.ml-1', label)]))
 
 const _authButtons = () => {
-  if (authService.isSignedIn()) {
+  if (AuthService.isSignedIn()) {
     return m('li.nav-item',
       m(`a.nav-link[href=/index_factory.html].retailer_nav_link#sign_out`, {
         onclick: () => {
-          authService.clear()
+          AuthService.clear()
           m.route.set('/')
         }
       }, m('img.nav_icon.mr-1[src=/assets/images/logout-icon.svg]'), 'Log Out'))
@@ -33,6 +32,7 @@ const _authButtons = () => {
   }
 }
 
+
 const _greeting = (vnode) => {
   if (vnode.state.agent) {
     return m(AuthedComponent, `Hi, ${vnode.state.agent.name}`)
@@ -40,7 +40,7 @@ const _greeting = (vnode) => {
   return `Welcome, factory team member!`
 }
 
-const _getAgentData = (vnode) => authService.getUserData()
+const _getAgentData = (vnode) => AuthService.getUserData()
   .then((user) => Promise.all([agentService.fetchAgent(user.public_key)])
     .then(([agent]) => {
       vnode.state.agent = agent.data
@@ -60,7 +60,7 @@ const App = {
 
   },
   onupdate: (vnode) => {
-    if (authService.isSignedIn() && vnode.state.agent === null && vnode.state.loading === false) {
+    if (AuthService.isSignedIn() && vnode.state.agent === null && vnode.state.loading === false) {
       _getAgentData(vnode)
     }
   },
@@ -122,7 +122,7 @@ const Welcome = {
             m('li', 'Broadcast your certifications and licenses to interested retailers'),
             m('li', 'Withdraw certification requests at any time and for any reason')
           ]),
-          m('button.btn.landing-page-action-btn', 'Open a new certification request')
+          m('a.btn.landing-page-action-btn', { href: `${AuthService.isSignedIn() ? '/requests' : '/signIn'}`, oncreate: m.route.link }, 'Open a new certification request'),
         ])
       ])
     ],

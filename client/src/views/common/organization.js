@@ -1,7 +1,7 @@
 'use strict'
 
 const m = require('mithril')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const organizationService = require('App/services/organization')
 const { Organization: OrganizationProto } = require('App/protobuf')
 const isoLangCodes = require('App/views/common/ISO-639-1-language.json')
@@ -48,7 +48,7 @@ var Organization = {
 
     submit: () => {
         Organization.submitting = true
-        return authService.getSigner()
+        return AuthService.getSigner()
             .then((signer) =>
                 organizationService.createOrganization(
                     Organization.name,
