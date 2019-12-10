@@ -59,4 +59,3 @@ script:
   - rustup default nightly
   - cargo +nightly fmt -- --check
   - cargo build
-
