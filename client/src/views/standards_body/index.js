@@ -23,7 +23,7 @@ const _authButtons = () => {
       }, m('img.nav_icon.mr-1[src=/assets/images/logout-icon.svg]'), 'Log Out'))
   } else {
     return [
-      m('a.btn.btn-outline-success[href=/signIn]', { oncreate: m.route.link }, 'Sign In'),
+      m('a.btn.navbar-signin[href=/signIn]', { oncreate: m.route.link }, 'Sign In'),
       m('a.btn.btn-link.small.text-muted[href=/signUp]', { oncreate: m.route.link }, 'Not a member? Sign Up')
     ]
   }
@@ -85,11 +85,11 @@ const Welcome = {
             ' to help retailers and brands ensure a transparent and responsible supply chain, from source to shelf'
           ]),
           m('ul.landing-page-info-section', [
-            m('li', 'Search for a variety of certified factories'),
-            m('li', 'View important certifications, licenses, and contact information for each retailer'),
-            m('li', 'Rest assured that both past and current data are accurate, verified, and up-to-date')
+            m('li', '+ Search for a variety of certified factories'),
+            m('li', '+ View important certifications, licenses, and contact information for each retailer'),
+            m('li', '+ Rest assured that both past and current data are accurate, verified, and up-to-date')
           ]),
-          m('a.btn.landing-page-action-btn', { href: `${AuthService.isSignedIn() ? '/standardsCreate' : '/signIn'}`, oncreate: m.route.link }, 'Start the search for certified factories'),
+          m('a.btn.landing-page-action-btn', { role: 'button', href: `${AuthService.isSignedIn() ? '/standardsCreate' : '/signIn'}`, oncreate: m.route.link }, 'Start the search for certified factories'),
         ])
       ])
     ]

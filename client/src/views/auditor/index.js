@@ -116,9 +116,9 @@ const Welcome = {
             ' to audit factories against industry standards'
           ]),
           m('ul.landing-page-info-section', [
-            m('li', 'See requests for audits and issue certifications'),
-            m('li', 'Search a list of factories that have been audited and certified'),
-            m('li', 'Rest assured that both past and current date are accurate and up-to-date')
+            m('li', '+ See requests for audits and issue certifications'),
+            m('li', '+ Search a list of factories that have been audited and certified'),
+            m('li', '+ Rest assured that both past and current date are accurate and up-to-date')
           ]),
           m('a.btn.landing-page-action-btn', { href: `${AuthService.isSignedIn() ? '/organizationCreate' : '/signIn'}`, oncreate: m.route.link }, 'Audit and certify a new factory'),
         ])

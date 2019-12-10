@@ -118,9 +118,9 @@ const Welcome = {
             ' to request audits and certifications for your factory'
           ]),
           m('ul.landing-page-info-section', [
-            m('li', 'Initiate requests to be audited and certified'),
-            m('li', 'Broadcast your certifications and licenses to interested retailers'),
-            m('li', 'Withdraw certification requests at any time and for any reason')
+            m('li', '+ Initiate requests to be audited and certified'),
+            m('li', '+ Broadcast your certifications and licenses to interested retailers'),
+            m('li', '+ Withdraw certification requests at any time and for any reason')
           ]),
           m('a.btn.landing-page-action-btn', { href: `${AuthService.isSignedIn() ? '/requests' : '/signIn'}`, oncreate: m.route.link }, 'Open a new certification request'),
         ])

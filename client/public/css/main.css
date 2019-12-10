@@ -1,95 +1,104 @@
 #app {
-  font-family: "Open Sans";
+  font-family: "Open Sans" sans-serif;;
 }
 
 .navbar {
-border-radius: 0px;
+  border-radius: 0px;
 }
 
 .landing-page {
-position: fixed;
-top: 0;
-bottom: 0;
-left: 0;
-right: 0;
-max-height: 100%;
-padding-top: 75px;
-max-width: 100%;
-margin: auto;
-overflow: auto;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 100%;
+  padding-top: 75px;
+  max-width: 100%;
+  margin: auto;
+  overflow: auto;
 }
 
 .landing-page-info {
-width: 35vw;
-height: 80vh;
-word-wrap: break-word;
-color: white;
-margin: 50px 0px 0px 30px;
-padding-bottom: 302px;
-font-weight: 100;
-font-size: 24px;
+  width: 35vw;
+  height: 80vh;
+  word-wrap: break-word;
+  color: white;
+  margin: 50px 0px 0px 30px;
+  padding-bottom: 300px;
+  font-weight: 100;
+  font-size: 1.5vw;
+}
+
+ul.landing-page-info-section {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 1em;
+  text-indent: -1em;
 }
 
 .landing-page-info-section {
-margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 .landing-page-info-header > strong {
-font-weight: bold;
+  font-weight: bold;
 }
 
 .landing-page-factory {
-background: url('/assets/images/factory-landing-page.svg') no-repeat center center fixed;
-background-size: cover;
+  background: url('/assets/images/factory-landing-page.svg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .landing-page-retailer {
-background: url('/assets/images/retailer-landing-page.svg') no-repeat center center fixed;
-background-size: cover;
+  background: url('/assets/images/retailer-landing-page.svg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .landing-page-auditor {
-background: url('/assets/images/auditor-landing-page.svg') no-repeat center center fixed;
-background-size: cover;
+  background: url('/assets/images/auditor-landing-page.svg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .landing-page-standards-body {
-background: url('/assets/images/standards-body-landing-page.svg') no-repeat center center fixed;
-background-size: cover;
+  background: url('/assets/images/standards-body-landing-page.svg') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .landing-page-action-btn {
-width: 100%;
-font-size: 24px;
-background-color: white;
+  width: 100%;
+  font-size: 1.25vw;
+  background-color: white;
 }
 
-.landing-page-retailer .landing-page-action-btn, 
-.landing-page-retailer .landing-page-action-btn:hover {
-color: #50c37c;
+
+.landing-page-action-btn:hover {
+  text-decoration: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.2);
 }
 
-.landing-page-factory .landing-page-action-btn, 
-.landing-page-factory .landing-page-action-btn:hover {
-color: #0088f5;
+.landing-page-retailer .landing-page-action-btn {
+  color: #50c37c;
 }
 
-.landing-page-auditor .landing-page-action-btnn, 
-.landing-page-auditor .landing-page-action-btn:hover {
-color: #86A588;
+.landing-page-factory .landing-page-action-btn {
+  color: #0088f5;
 }
 
-.landing-page-standards-body .landing-page-action-btn, 
-.landing-page-standards-body .landing-page-action-btn:hover {
-color: #3fc2cd;
+.landing-page-auditor .landing-page-action-btnn {
+  color: #86A588;
+}
+
+.landing-page-standards-body .landing-page-action-btn { 
+  color: #3fc2cd;
 }
 
 .landing-page-info-header {
-font-size: 36px;
+  font-size: 2vw;
 }
 
 .landing-page-info-section {
-padding-bottom: 30px;
+  padding-bottom: 30px;
 }
 /* Override mithril-datepicker default styling */
 
@@ -571,9 +580,18 @@ select.factory-profile-value:disabled  {
     border-bottom: solid 2px #4a4a4a !important;
 }
 
+#app.standards_body > nav > div > ul > a.btn.navbar-signin {
+  color: #3fc2cd;
+}
+
+#app.standards_body > nav > div > ul > a.btn.navbar-signin:hover {
+  color: white;
+  background-color: #3fc2cd;
+}
+
 /* Old Styling */
 
-.modal {
+/* .modal {
   text-align: center;
 }
 
@@ -604,4 +622,4 @@ select.factory-profile-value:disabled  {
 
 #app.standards_body button.btn-outline-secondary {
     color:whitesmoke;
-}
+} */
