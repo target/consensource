@@ -16,13 +16,9 @@ services:
       bash -c "
         while true; do curl -s http://sawtooth-rest-api:8008/state | grep -q head; if [ $$? -eq 0 ]; then break; fi; sleep 0.5; done;
         sabre cr --create consensource --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
-        sabre upload --filename product.yaml --key /grid-shared/my_key --url http://sawtooth-rest-api:8008 --wait 30
-        sabre ns --create cad11d --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
-        sabre ns --create 621dee01 --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
-        sabre ns --create 621dee02 --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
-        sabre perm cad11d consensource --key /shared_data/my_key --read --write --url http://sawtooth-rest-api:8008 --wait 30
-        sabre perm 621dee01 consensource --key /shared_data/my_key --read --url http://sawtooth-rest-api:8008 --wait 30
-        sabre perm 621dee02 consensource --key /shared_data/my_key --read --write --url http://sawtooth-rest-api:8008 --wait 30
+        sabre upload --filename /build/processor/consensource.yaml --key /shared_data/my_key --url http://sawtooth-rest-api:8008 --wait 30
+        sabre ns --create 3d0111 --key /shared_data/my_key --owner $$(cat /shared_data/my_key.pub) --url http://sawtooth-rest-api:8008 --wait 30
+        sabre perm 3d0111 consensource --key /shared_data/my_key --read --write --url http://sawtooth-rest-api:8008 --wait 30
         echo '---------========= consensource contract is loaded =========---------'
       "
 
@@ -37,8 +33,8 @@ services:
           sawtooth keygen
         fi;
         mkdir -p /shared_data/keys && \
-          creg genesis -o /shared_data/creg-genesis.batch -K /shared_data/keys \
-              -g /example-genesis.yaml;
+          csrc genesis -o /shared_data/csrc-genesis.batch -K /shared_data/keys \
+              -g example-genesis.yaml;
         tail -f /dev/null
       "
 
@@ -68,7 +64,7 @@ services:
       "
 
   validator:
-    image: hyperledger/sawtooth-validator:chime
+    image: hyperledger/sawtooth-validator:1.2
     container_name: consensource-validator
     expose:
       - 4004
@@ -86,10 +82,11 @@ services:
           sawset genesis -k /root/.sawtooth/keys/my_key.priv && \
           sawset proposal create \
           -k /root/.sawtooth/keys/my_key.priv \
+          sawtooth.swa.administrators=$$(cat /shared_data/my_key.pub) \
           sawtooth.consensus.algorithm.name=Devmode \
           sawtooth.consensus.algorithm.version=0.1 \
           -o config.batch \
-          && sawadm genesis config-genesis.batch config.batch /shared_data/creg-genesis.batch && \
+          && sawadm genesis config-genesis.batch config.batch && \
         sawtooth-validator -v \
           --endpoint tcp://validator:8800 \
           --bind component:tcp://eth0:4004 \
@@ -130,16 +127,23 @@ services:
       - validator
     entrypoint: settings-tp -v -C tcp://validator:4004
 
-  processor:
-    image: target/consensource:processor
-    container_name: consensource-processor
-    build:
-      context: .
-      dockerfile: ./processor/Dockerfile
-    command: |
-      bash -c "
-        cert-registry-processor -v -C tcp://validator:4004
-      "
+  sabre-tp:
+    image: hyperledger/sawtooth-sabre-tp:0.4
+    container_name: sawtooth-sabre-tp
+    depends_on:
+      - validator
+    entrypoint: sawtooth-sabre -vv --connect tcp://validator:4004
+
+  # processor:
+  #   image: target/consensource:processor
+  #   container_name: consensource-processor
+  #   build:
+  #     context: .
+  #     dockerfile: ./processor/Dockerfile
+  #   command: |
+  #     bash -c "
+  #       cert-registry-processor -v -C tcp://validator:4004
+  #     "
 
   postgres:
     image: postgres:alpine

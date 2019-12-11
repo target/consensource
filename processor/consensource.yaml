@@ -13,11 +13,9 @@
 # limitations under the License.
 
 name: consensource
-version: "1.0"
+version: "0.1"
 wasm: target/wasm32-unknown-unknown/release/cert-registry-processor.wasm
 inputs:
-  - "621dee01"
-  - "621dee02"
-  - "cad11d"
+  - "3d0111"
 outputs:
-  - "621dee02"
+  - "3d0111"

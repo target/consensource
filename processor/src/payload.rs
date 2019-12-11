@@ -125,12 +125,10 @@ impl CertPayload {
                             "Factory must be created with an address",
                         )));
                     }
-                } else {
-                    if create_org.has_address() {
-                        return Err(ApplyError::InvalidTransaction(String::from(
-                            "Only a factory can have an address",
-                        )));
-                    }
+                } else if create_org.has_address() {
+                    return Err(ApplyError::InvalidTransaction(String::from(
+                        "Only a factory can have an address",
+                    )));
                 }
 
                 Action::CreateOrganization(create_org.clone())

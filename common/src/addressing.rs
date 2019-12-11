@@ -1,7 +1,7 @@
 use crypto::digest::Digest;
 use crypto::sha2::Sha256;
 
-pub const FAMILY_NAMESPACE: &str = "certificate_registry";
+pub const FAMILY_NAMESPACE: &str = "consensource";
 pub const FAMILY_VERSION: &str = "0.1";
 const AGENT: &str = "00";
 const CERTIFICATE: &str = "01";

@@ -12,20 +12,18 @@ cfg_if! {
     }
 }
 
-use std::collections::HashMap;
-
 use common::addressing;
 
 use common::proto;
 use protobuf;
 
 pub struct CertState<'a> {
-    context: &'a mut TransactionContext,
+    context: &'a mut dyn TransactionContext,
 }
 
 impl<'a> CertState<'a> {
     // Create new instance of CertState
-    pub fn new(context: &'a mut TransactionContext) -> CertState {
+    pub fn new(context: &'a mut dyn TransactionContext) -> CertState {
         CertState { context }
     }
 
@@ -39,7 +37,7 @@ impl<'a> CertState<'a> {
         agent_public_key: &str,
     ) -> Result<Option<proto::agent::Agent>, ApplyError> {
         let address = addressing::make_agent_address(agent_public_key);
-        let state_data = self.context.get_state(vec![address])?;
+        let state_data = self.context.get_state_entry(&address)?;
         match state_data {
             Some(data) => {
                 let agents: proto::agent::AgentContainer =
@@ -70,7 +68,7 @@ impl<'a> CertState<'a> {
         organization_id: &str,
     ) -> Result<Option<proto::organization::Organization>, ApplyError> {
         let address = addressing::make_organization_address(organization_id);
-        let state_data = self.context.get_state(vec![address])?;
+        let state_data = self.context.get_state_entry(&address)?;
         match state_data {
             Some(data) => {
                 let organizations: proto::organization::OrganizationContainer =
@@ -101,7 +99,7 @@ impl<'a> CertState<'a> {
         certificate_id: &str,
     ) -> Result<Option<proto::certificate::Certificate>, ApplyError> {
         let address = addressing::make_certificate_address(certificate_id);
-        let state_data = self.context.get_state(vec![address])?;
+        let state_data = self.context.get_state_entry(&address)?;
         match state_data {
             Some(data) => {
                 let certificates: proto::certificate::CertificateContainer =
@@ -132,7 +130,7 @@ impl<'a> CertState<'a> {
         request_id: &str,
     ) -> Result<Option<proto::request::Request>, ApplyError> {
         let address = addressing::make_request_address(request_id);
-        let state_data = self.context.get_state(vec![address])?;
+        let state_data = self.context.get_state_entry(&address)?;
         match state_data {
             Some(data) => {
                 let open_requests: proto::request::RequestContainer =
@@ -163,7 +161,7 @@ impl<'a> CertState<'a> {
         standard_id: &str,
     ) -> Result<Option<proto::standard::Standard>, ApplyError> {
         let address = addressing::make_standard_address(standard_id);
-        let state_data = self.context.get_state(vec![address])?;
+        let state_data = self.context.get_state_entry(&address)?;
         match state_data {
             Some(data) => {
                 let standards: proto::standard::StandardContainer =
@@ -196,7 +194,7 @@ impl<'a> CertState<'a> {
         agent: proto::agent::Agent,
     ) -> Result<(), ApplyError> {
         let address = addressing::make_agent_address(agent_public_key);
-        let state_data = self.context.get_state(vec![address.clone()])?;
+        let state_data = self.context.get_state_entry(&address.clone())?;
         let mut agents: proto::agent::AgentContainer = match state_data {
             Some(data) => protobuf::parse_from_bytes(data.as_slice()).map_err(|_err| {
                 ApplyError::InvalidTransaction(String::from("Cannot deserialize agent container"))
@@ -226,9 +224,7 @@ impl<'a> CertState<'a> {
         })?;
 
         // Insert serialized AgentContainer to an address in the merkle tree
-        let mut sets = HashMap::new();
-        sets.insert(address, serialized);
-        self.context.set_state(sets)?;
+        self.context.set_state_entry(address, serialized)?;
         Ok(())
     }
 
@@ -244,7 +240,7 @@ impl<'a> CertState<'a> {
         organization: proto::organization::Organization,
     ) -> Result<(), ApplyError> {
         let address = addressing::make_organization_address(organization_id);
-        let state_data = self.context.get_state(vec![address.clone()])?;
+        let state_data = self.context.get_state_entry(&address.clone())?;
         let mut organizations: proto::organization::OrganizationContainer = match state_data {
             Some(data) => protobuf::parse_from_bytes(data.as_slice()).map_err(|_err| {
                 ApplyError::InvalidTransaction(String::from(
@@ -276,9 +272,7 @@ impl<'a> CertState<'a> {
         })?;
 
         // Insert serialized OrganizationContainer to an address in the merkle tree
-        let mut sets = HashMap::new();
-        sets.insert(address, serialized);
-        self.context.set_state(sets)?;
+        self.context.set_state_entry(address, serialized)?;
         Ok(())
     }
 
@@ -294,7 +288,7 @@ impl<'a> CertState<'a> {
         certificate: proto::certificate::Certificate,
     ) -> Result<(), ApplyError> {
         let address = addressing::make_certificate_address(certificate_id);
-        let state_data = self.context.get_state(vec![address.clone()])?;
+        let state_data = self.context.get_state_entry(&address.clone())?;
         let mut certificates: proto::certificate::CertificateContainer = match state_data {
             Some(data) => protobuf::parse_from_bytes(data.as_slice()).map_err(|_err| {
                 ApplyError::InvalidTransaction(String::from(
@@ -326,9 +320,7 @@ impl<'a> CertState<'a> {
         })?;
 
         // Insert serialized CertificateContainer to an address in the merkle tree
-        let mut sets = HashMap::new();
-        sets.insert(address, serialized);
-        self.context.set_state(sets)?;
+        self.context.set_state_entry(address, serialized)?;
         Ok(())
     }
 
@@ -344,7 +336,7 @@ impl<'a> CertState<'a> {
         request: proto::request::Request,
     ) -> Result<(), ApplyError> {
         let address = addressing::make_request_address(request_id);
-        let state_data = self.context.get_state(vec![address.clone()])?;
+        let state_data = self.context.get_state_entry(&address.clone())?;
         let mut requests: proto::request::RequestContainer = match state_data {
             Some(data) => protobuf::parse_from_bytes(data.as_slice()).map_err(|_err| {
                 ApplyError::InvalidTransaction(String::from("Cannot deserialize request container"))
@@ -374,9 +366,7 @@ impl<'a> CertState<'a> {
         })?;
 
         // Insert serialized RequestContainer to an address in the merkle tree
-        let mut sets = HashMap::new();
-        sets.insert(address, serialized);
-        self.context.set_state(sets)?;
+        self.context.set_state_entry(address, serialized)?;
         Ok(())
     }
 
@@ -392,7 +382,7 @@ impl<'a> CertState<'a> {
         standard: proto::standard::Standard,
     ) -> Result<(), ApplyError> {
         let address = addressing::make_standard_address(standard_id);
-        let state_data = self.context.get_state(vec![address.clone()])?;
+        let state_data = self.context.get_state_entry(&address.clone())?;
         let mut standards: proto::standard::StandardContainer = match state_data {
             Some(data) => protobuf::parse_from_bytes(data.as_slice()).map_err(|_err| {
                 ApplyError::InvalidTransaction(String::from(
@@ -424,9 +414,7 @@ impl<'a> CertState<'a> {
         })?;
 
         // Insert serialized StandardContainer to an address in the merkle tree
-        let mut sets = HashMap::new();
-        sets.insert(address, serialized);
-        self.context.set_state(sets)?;
+        self.context.set_state_entry(address, serialized)?;
         Ok(())
     }
 }

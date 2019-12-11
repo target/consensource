@@ -513,12 +513,12 @@ impl CertTransactionHandler {
         let accreditations = certifying_body_details.get_accreditations().to_vec();
         if accreditations
             .iter()
-            .find(|accreditation| accreditation.get_standard_id() == standard_id.to_string())
+            .find(|accreditation| accreditation.get_standard_id() == standard_id)
             .is_none()
         {
             return Err(ApplyError::InvalidTransaction(format!(
                 "Certifying body is not accredited for Standard {}",
-                standard_id.to_string()
+                standard_id
             )));
         }
         let latest_standard_version = accreditations.last().unwrap();
@@ -528,7 +528,7 @@ impl CertTransactionHandler {
         new_certificate.set_id(payload.get_id().to_string());
         new_certificate.set_certifying_body_id(agent.get_organization_id().to_string());
         new_certificate.set_factory_id(factory_id);
-        new_certificate.set_standard_id(standard_id.to_string());
+        new_certificate.set_standard_id(standard_id);
         new_certificate
             .set_standard_version(latest_standard_version.get_standard_version().to_string());
         new_certificate.set_certificate_data(::protobuf::RepeatedField::from_vec(
@@ -868,8 +868,7 @@ impl CertTransactionHandler {
 
         if versions
             .iter()
-            .find(|version| version.version == payload.version)
-            .is_some()
+            .any(|version| version.version == payload.version)
         {
             return Err(ApplyError::InvalidTransaction(format!(
                 "Version already exists. Version  {}",
@@ -1077,15 +1076,10 @@ impl CertTransactionHandler {
             }
         };
 
-        if accreditations
-            .iter()
-            .find(|accreditation| {
-                accreditation.get_standard_id() == payload.get_standard_id()
-                    && accreditation.get_standard_version()
-                        == latest_standard_version.get_version().to_string()
-            })
-            .is_some()
-        {
+        if accreditations.iter().any(|accreditation| {
+            accreditation.get_standard_id() == payload.get_standard_id()
+                && accreditation.get_standard_version() == latest_standard_version.get_version()
+        }) {
             return Err(ApplyError::InvalidTransaction(format!(
                 "Accreditation for Standard {}, version {} already exists",
                 payload.get_standard_id(),
@@ -1153,7 +1147,7 @@ impl TransactionHandler for CertTransactionHandler {
     fn apply(
         &self,
         request: &TpProcessRequest,
-        context: &mut TransactionContext,
+        context: &mut dyn TransactionContext,
     ) -> Result<(), ApplyError> {
         let header = request.get_header();
         let signer_public_key = header.get_signer_public_key();
@@ -1201,7 +1195,10 @@ impl TransactionHandler for CertTransactionHandler {
 
 // If the TP will be compiled to WASM to be run as a smart contract in Sabre this apply method will be
 // used as wrapper for the handler apply method. For Sabre the apply must return a boolean
-fn apply(request: &TpProcessRequest, context: &mut TransactionContext) -> Result<bool, ApplyError> {
+fn apply(
+    request: &TpProcessRequest,
+    context: &mut dyn TransactionContext,
+) -> Result<bool, ApplyError> {
     let handler = CertTransactionHandler::new();
     match handler.apply(request, context) {
         Ok(_) => Ok(true),
