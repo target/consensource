@@ -74,6 +74,7 @@ var OrganizationCreate = {
         m('div.form', [
             vnode.state.organization.errorMsg ? m('p.text-danger', vnode.state.organization.errorMsg) : null,
             m('div.form-group', [
+                m('h3', 'Create An Organization'),
                 m('label[for=organizationName]', 'Name'),
                 m("input.form-control[type=text]", { oninput: m.withAttr("value", vnode.state.organization.setName), value: vnode.state.organization.name }),
                 m('h5', 'Contact Information'),
@@ -83,9 +84,9 @@ var OrganizationCreate = {
                 m("input.form-control[type=text]", { oninput: m.withAttr("value", vnode.state.organization.setContactPhoneNumber), value: vnode.state.organization.contact.phoneNumber }),
                 m('label[for=contactLanguageCode]', 'Language Code'),
                 m("select.form-control", {
-                  oninput: m.withAttr("value", vnode.state.organization.setContactLanguageCode),
-                  value: vnode.state.organization.contact.languageCode
-                }, isoLangCodes.map(({code, name}) => m('option', {value: code, text: name}))),
+                    oninput: m.withAttr("value", vnode.state.organization.setContactLanguageCode),
+                    value: vnode.state.organization.contact.languageCode
+                }, isoLangCodes.map(({ code, name }) => m('option', { value: code, text: name }))),
 
             ]),
             m("button.btn.btn-primary", {
@@ -134,9 +135,9 @@ var OrganizationList = {
     oncreate: (vnode) => {
         organizationService.loadOrganizations()
             .then((organizations) => {
-              organizations.data.sort((a, b) => a.name > b.name)
-              vnode.state.organizations = organizations.data
-              vnode.state.loading = false
+                organizations.data.sort((a, b) => a.name > b.name)
+                vnode.state.organizations = organizations.data
+                vnode.state.loading = false
             })
             .catch(() => {
                 vnode.state.noRecordsElement =

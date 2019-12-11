@@ -589,37 +589,7 @@ select.factory-profile-value:disabled  {
   background-color: #3fc2cd;
 }
 
-/* Old Styling */
-
-/* .modal {
-  text-align: center;
+label.form-label {
+  margin-bottom: 0px;
+  font-weight: bold;
 }
-
-#app.standards_body > nav.navbar-dark{
-    background: #003366 !important;
-}
-
-#app.standards_body h1, h2, h3, h4  {
-    color: #003366 !important;
-}
-
-#app.standards_body table thead tr th{
-    background-color: #003366 !important;
-    border-color: #0066cc !important;
-}
-
-#app.standards_body > nav > div > div > a.btn.btn-link.small {
-    color:whitesmoke !important;
-}
-
-#app.standards_body > nav > div > div > a.btn.btn-outline-success {
-    color:whitesmoke !important;
-}
-
-#app.standards_body > nav > div > div > a.btn.btn-outline-success:hover {
-    background-color: #0066cc;
-}
-
-#app.standards_body button.btn-outline-secondary {
-    color:whitesmoke;
-} */
