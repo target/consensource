@@ -1,6 +1,6 @@
 FROM target/consensource:rust-nightly
 
-RUN apt-get update && apt-get install -y unzip libzmq3-dev protobuf-compiler wget
+RUN apt-get update && apt-get install -y unzip libzmq3-dev protobuf-compiler wget netcat
 
 COPY . .
 WORKDIR rest_api

@@ -104,6 +104,15 @@ services:
       # OAUTH_VALIDATION_URL: "https://some-identity-provider.tld"
     command: |
       bash -c "
+        RETRIES=5
+        DB_PORT=5432
+
+        # Wait until Postgres is up to start the server
+        until netcat -q 1 postgres $$DB_PORT </dev/null || [ $$RETRIES -eq 0 ]; do
+          echo Waiting for Postgres server, $$((RETRIES--)) remaining attempts...
+          sleep 1
+        done
+
         consensource-rest-api -v --dbhost postgres -C tcp://validator:4004
       "
 
@@ -154,6 +163,6 @@ services:
       context: .
       dockerfile: ./state_delta_subscriber/Dockerfile
     command: |
-      bash -c "
+      bash -c "  
         consensource-sds --dbhost postgres -v -C tcp://validator:4004
       "

@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  test-postgres:
+    image: postgres:alpine
+    container_name: postgres-test
+    restart: always
+    build:
+      context: ../..
+    environment:
+      POSTGRES_USER: cert-registry
+      POSTGRES_PASSWORD: cert-registry
+      POSTGRES_DB: cert-registry
+    volumes:
+      - "../../database/tables:/docker-entrypoint-initdb.d"
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+  
+  test-rest-api:
+    image: consensource-rest-api:test
+    container_name: consensource-rest-api-test
+    build:
+      context: ../..
+      dockerfile: ./rest_api/Dockerfile
+    ports:
+      - "9009:9009"
+      - "9010:9010"
+    depends_on:
+      - test-postgres
+    environment:
+      ROCKET_ADDRESS: "0.0.0.0"
+      ROCKET_PORT: "9009"
+      # OAUTH_VALIDATION_URL: "https://some-identity-provider.tld"
+    command: |
+      bash -c "
+        RETRIES=5
+        DB_PORT=5432
+
+        # Wait until Postgres is up to start the server
+        until netcat -q 1 test-postgres $$DB_PORT </dev/null || [ $$RETRIES -eq 0 ]; do
+          echo Waiting for Postgres server, $$((RETRIES--)) remaining attempts...
+          sleep 1
+        done
+
+        consensource-rest-api -v --dbhost test-postgres -C tcp://validator:4004   
+      "
