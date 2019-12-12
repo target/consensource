@@ -26,7 +26,6 @@ services:
       "
 
   client:
-    image: target/consensource:client
     container_name: consensource-client
     build:
       context: client

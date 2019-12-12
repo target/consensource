@@ -1,8 +1,9 @@
 FROM node:8 as builder
 
-WORKDIR /project/client
+COPY protos /protos
+COPY client /client
 
-COPY . /client/
+WORKDIR /client
 
 RUN cd /client \
     && npm install \
@@ -10,7 +11,7 @@ RUN cd /client \
 
 FROM httpd:2.4-alpine
 
-COPY --from=builder /client/ /client/
+COPY --from=builder /client /client
 
 # Remove default index.html
 RUN rm /usr/local/apache2/htdocs/index.html
