@@ -3,7 +3,6 @@ FROM target/consensource:rust-base-1.30
 COPY protos /protos
 COPY common /common
 RUN cd /common \
-    && rustup default stable \
     && cargo build
 
 COPY cli /cli
