@@ -1,6 +1,7 @@
 language: rust
 rust:
   - 1.39.0
+cache: cargo
 
 before_install:
   # Install ZMQ
@@ -19,6 +20,8 @@ before_install:
   - rustup component add rustfmt
   - rustup toolchain install nightly # Nightly needed for rocket rest api
   - rustup component add rustfmt --toolchain nightly
+  # Install tarpaulin (code coverage tool)
+  - cargo install cargo-tarpaulin -f
   
 before_script:
   - echo $TRAVIS_COMMIT
@@ -26,36 +29,40 @@ before_script:
   - echo $TRAVIS_BRANCH
   - echo $TRAVIS_BUILD_NUMBER
   - echo $TRAVIS_REPO_SLUG
+  - echo $TRAVIS_BUILD_DIR
 
 script:
- # Lint, build client
-  - cd client
-  - npm install
-  - npm run lint
-  - npm run build-dev
-  # Lint, build common
-  - cd ../common
-  - cargo fmt -- --check
-  - cargo build
-  # Lint, build database
-  - cd ../database
-  - cargo fmt -- --check
-  - cargo build
-  # Lint, test, build cli
-  - cd ../cli
-  - cargo fmt -- --check
-  - cargo test
-  - cargo build
-  # Lint, build processor
-  - cd ../processor
-  - cargo fmt -- --check
-  - cargo build
-   # Lint, build state delta subscriber
-  - cd ../state_delta_subscriber
-  - cargo fmt -- --check
-  - cargo build
-  # Lint, build rest-api with nightly
-  - cd ../rest_api
-  - rustup default nightly
-  - cargo +nightly fmt -- --check
-  - cargo build
+  - cd cli
+  - cargo tarpaulin -v
+#  # Lint, build client
+#   - cd client
+#   - npm install
+#   - npm run lint
+#   - npm run build-dev
+#   # Lint, build common
+#   - cd ../common
+#   - cargo fmt -- --check
+#   - cargo build
+#   # Lint, build database
+#   - cd ../database
+#   - cargo fmt -- --check
+#   - cargo build
+#   # Lint, test, build cli
+#   - cd ../cli
+#   - cargo fmt -- --check
+#   - cargo tarpaulin -v
+#   - cargo build
+#   # Lint, build processor
+#   - cd ../processor
+#   - cargo fmt -- --check
+#   - cargo build
+#    # Lint, build state delta subscriber
+#   - cd ../state_delta_subscriber
+#   - cargo fmt -- --check
+#   - cargo build
+#   # Lint, build rest-api with nightly
+#   - cd ../rest_api
+#   - rustup default nightly
+#   - cargo +nightly fmt -- --check
+#   - cargo tarpaulin -v
+#   - cargo build
