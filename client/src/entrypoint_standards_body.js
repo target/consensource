@@ -9,9 +9,9 @@ const { CreateStandardsBody } = require('App/views/standards_body/organization')
 const { StandardCreate, StandardList, StandardUpdate } = require('App/views/standards_body/standard')
 const { CertifyingBodyList } = require('App/views/standards_body/certifying_body')
 const { AccreditCertifyingBody } = require('App/views/standards_body/accreditations')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 
-authService.namespace = 'standards_body'
+AuthService.namespace = 'standards_body'
 
 let element = document.getElementById("app")
 m.route(element, '/', {

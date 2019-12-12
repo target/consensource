@@ -2,7 +2,7 @@
 
 const m = require('mithril')
 const agentService = require('App/services/agent')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const factoryService = require('App/services/factory')
 const transactionService = require('App/services/transaction')
 const { inputField, languageSelector } = require('App/components/forms')
@@ -48,28 +48,28 @@ const _toggleEditAddress = (vnode, updated) => {
     t.classList.toggle("form-control");
     t.classList.toggle("mt-2");
     if (t.classList.contains("optional") && t.classList.contains("empty")) {
-       t.classList.toggle("hide");
+      t.classList.toggle("hide");
     }
 
-   if (t.hasAttribute("readonly")) {
-     t.removeAttribute("readonly")
-     t.setAttribute("placeholder", t.getAttribute("name"))
-   } else {
-     t.setAttribute("readonly", "readonly")
-     t.removeAttribute("placeholder")
-     if (!updated) {
-       FactoryUpdate.setFactory(vnode.state.factory)
-     }
-   }
+    if (t.hasAttribute("readonly")) {
+      t.removeAttribute("readonly")
+      t.setAttribute("placeholder", t.getAttribute("name"))
+    } else {
+      t.setAttribute("readonly", "readonly")
+      t.removeAttribute("placeholder")
+      if (!updated) {
+        FactoryUpdate.setFactory(vnode.state.factory)
+      }
+    }
     return ""
-   })
+  })
 
-   let addressButtons = document.querySelectorAll(`.btn-address`)
-   Object.values(addressButtons).map((t) => {
-     t.classList.toggle("show");
-     t.classList.toggle("hide");
-     return ""
-    })
+  let addressButtons = document.querySelectorAll(`.btn-address`)
+  Object.values(addressButtons).map((t) => {
+    t.classList.toggle("show");
+    t.classList.toggle("hide");
+    return ""
+  })
 }
 
 const _toggleEditContact = (vnode, updated) => {
@@ -81,30 +81,30 @@ const _toggleEditContact = (vnode, updated) => {
 
     if (t.classList.contains('select-language')) {
       if (t.hasAttribute("disabled")) {
-          t.removeAttribute("disabled")
+        t.removeAttribute("disabled")
       } else {
-          t.setAttribute("disabled", "disabled")
+        t.setAttribute("disabled", "disabled")
       }
     }
-   if (t.hasAttribute("readonly")) {
-     t.removeAttribute("readonly")
-     t.setAttribute("placeholder", t.getAttribute("name"))
-   } else {
-     t.setAttribute("readonly", "readonly")
-     t.removeAttribute("placeholder")
-     if (!updated) {
-       FactoryUpdate.setFactory(vnode.state.factory)
-     }
-   }
+    if (t.hasAttribute("readonly")) {
+      t.removeAttribute("readonly")
+      t.setAttribute("placeholder", t.getAttribute("name"))
+    } else {
+      t.setAttribute("readonly", "readonly")
+      t.removeAttribute("placeholder")
+      if (!updated) {
+        FactoryUpdate.setFactory(vnode.state.factory)
+      }
+    }
     return ""
-   })
+  })
 
-   let contactButtons = document.querySelectorAll(`.btn-contact`)
-   Object.values(contactButtons).map((t) => {
-     t.classList.toggle("show");
-     t.classList.toggle("hide");
-     return ""
-    })
+  let contactButtons = document.querySelectorAll(`.btn-contact`)
+  Object.values(contactButtons).map((t) => {
+    t.classList.toggle("show");
+    t.classList.toggle("hide");
+    return ""
+  })
 }
 
 const FactoryDetails = {
@@ -142,66 +142,81 @@ const FactoryDetails = {
               },
               disabled: PasswordUpdate.submitting || PasswordUpdate.invalidPassword(),
             }, "Update"),
-            m('btn.btn.password-fields.cancelUpdate.m-2.hide', { onclick: () => _toggleEditPassword(false) }, 'Cancel')
+          m('btn.btn.password-fields.cancelUpdate.m-2.hide', { onclick: () => _toggleEditPassword(false) }, 'Cancel')
         ]),
-        m('dl.row', [m("btn.dt-sm-2.btn.password-fields.updatePassword.m-2.show", {onclick: () => _toggleEditPassword(true)}, "Update Password")]),
-        m('div.mt-5', [m('img.edit-icon[src=/assets/images/pencil.svg]', {onclick: () => _toggleEditAddress(vnode)}), m('span.factory-profile-field.ml-2', 'Address')]),
-        m("input.factory-profile-value.address-value.form-control-plaintext[type=text][readonly=true][name='Street Line 1 *']",
-        {
-          oninput: m.withAttr("value", FactoryUpdate.setAddressStreetLine1),
-          value:   FactoryUpdate.addressStreetLine1
-         }),
-        m(`input.factory-profile-value.address-value.optional.form-control-plaintext[type=text][readonly=true][name='Street Line 2']`,
-        {
-          oninput: m.withAttr("value", FactoryUpdate.setAddressStreetLine2),
-          value:   FactoryUpdate.addressStreetLine2,
-          class:   !vnode.state.factory.address.street_line_2 ? "hide empty" : ""
-        }),
-        m("input.factory-profile-value.address-value.form-control-plaintext[type=text][readonly=true][name='City *']",
-        {oninput: m.withAttr("value", FactoryUpdate.setAddressCity),
-          value:   FactoryUpdate.addressCity }),
+        m('dl.row', [m("btn.dt-sm-2.btn.password-fields.updatePassword.m-2.show", { onclick: () => _toggleEditPassword(true) }, "Update Password")]),
+        m('div.mt-5', [m('img.edit-icon[src=/assets/images/pencil.svg]', { onclick: () => _toggleEditAddress(vnode) }), m('span.factory-profile-field.ml-2', 'Address')]),
+        m("label.form-label[for='address-street-1']", 'Street Address 1'),
+        m("input#address-street-1.factory-profile-value.address-value.form-control-plaintext[type=text][readonly=true][name='Street Line 1 *']",
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setAddressStreetLine1),
+            value: FactoryUpdate.addressStreetLine1
+          }),
+        m("label.form-label[for='address-street-2']", 'Street Address 2'),
+        m(`input#address-street-2.factory-profile-value.address-value.optional.form-control-plaintext[type=text][readonly=true][name='Street Line 2']`,
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setAddressStreetLine2),
+            value: FactoryUpdate.addressStreetLine2,
+            class: !vnode.state.factory.address.street_line_2 ? "hide empty" : ""
+          }),
+        m("label.form-label[for='address-city']", 'City *'),
+        m("input#address-city.factory-profile-value.address-value.form-control-plaintext[type=text][readonly=true][name='City *']",
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setAddressCity),
+            value: FactoryUpdate.addressCity
+          }),
+        m("label.form-label[for='address-state-province']", 'State/Province'),
+        m(`input#address-state-province.factory-profile-value.address-value.optional.form-control-plaintext[type=text][readonly=true][name='State/Province']`,
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setAddressStateProvince),
+            value: FactoryUpdate.addressStateProvince,
+            class: !vnode.state.factory.address.state_province ? "hide empty" : ""
+          }),
+        m("label.form-label[for='address-country']", 'Country *'),
+        m("input#address-country.factory-profile-value.address-value.form-control-plaintext[type=text][readonly=true][name='Country *']",
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setAddressCountry),
+            value: FactoryUpdate.addressCountry
+          }),
+        m("label.form-label[for='address-postal-code']", 'Postal Code'),
+        m(`input#address-postal-code.factory-profile-value.address-value.optional.form-control-plaintext[type=text][readonly=true][name='Postal Code']`,
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setAddressPostalCode),
+            value: FactoryUpdate.addressPostalCode,
+            class: !vnode.state.factory.address.postal_code ? "hide empty" : ""
+          }),
+        m('.row', [
+          m("button.btn.btn-address.m-2.updateInformation.hide",
+            {
+              onclick: () => {
+                FactoryUpdate.submit()
+                _toggleEditAddress(vnode, true)
+              },
+              disabled: FactoryUpdate.submitting || FactoryUpdate.invalidFields(),
+            }, "Update Address"),
+          m('btn.btn.cancelUpdate.m-2.btn-address.hide', { onclick: () => _toggleEditAddress(vnode) }, 'Cancel')
+        ]),
 
-        m(`input.factory-profile-value.address-value.optional.form-control-plaintext[type=text][readonly=true][name='State/Province']`,
-        {
-          oninput: m.withAttr("value", FactoryUpdate.setAddressStateProvince),
-          value:   FactoryUpdate.addressStateProvince,
-          class:   !vnode.state.factory.address.state_province ? "hide empty" : ""
-        }),
-        m("input.factory-profile-value.address-value.form-control-plaintext[type=text][readonly=true][name='Country *']",
-        {oninput: m.withAttr("value", FactoryUpdate.setAddressCountry),
-          value:   FactoryUpdate.addressCountry }),
-        m(`input.factory-profile-value.address-value.optional.form-control-plaintext[type=text][readonly=true][name='Postal Code']`,
-        {
-          oninput: m.withAttr("value", FactoryUpdate.setAddressPostalCode),
-          value:   FactoryUpdate.addressPostalCode,
-          class:   !vnode.state.factory.address.postal_code ? "hide empty" : ""
-        }),
-          m('.row', [
-            m("button.btn.btn-address.m-2.updateInformation.hide",
-              {
-                onclick: () => {
-                  FactoryUpdate.submit()
-                  _toggleEditAddress(vnode, true)
-                },
-                disabled: FactoryUpdate.submitting || FactoryUpdate.invalidFields(),
-              }, "Update Address"),
-            m('btn.btn.cancelUpdate.m-2.btn-address.hide', { onclick:() => _toggleEditAddress(vnode) }, 'Cancel')
-          ]),
 
-
-        m('div.mt-5', [m('img.edit-icon[src=/assets/images/pencil.svg]', {onclick: () => _toggleEditContact(vnode)}), m('span.factory-profile-field.ml-2', 'Contact Info')]),
-        m("input.factory-profile-value.contact-value.form-control-plaintext[type=text][readonly=true][name='Name *']",
-        {oninput: m.withAttr("value", FactoryUpdate.setContactName),
-          value:   FactoryUpdate.contactName }),
-        m("input.factory-profile-value.contact-value.form-control-plaintext[type=text][readonly=true][name='Phone Number *']",
-        {oninput: m.withAttr("value", FactoryUpdate.setContactPhoneNumber),
-          value:   FactoryUpdate.contactPhoneNumber }),
-
-        m("select.factory-profile-value.contact-value.select-language.form-control-plaintext[disabled='disabled'][readonly=true][name='Language *']", {
+        m('div.mt-5', [m('img.edit-icon[src=/assets/images/pencil.svg]', { onclick: () => _toggleEditContact(vnode) }), m('span.factory-profile-field.ml-2', 'Contact Info')]),
+        m("label.form-label[for='contact-name']", 'Name *'),
+        m("input#contact-name.factory-profile-value.contact-value.form-control-plaintext[type=text][readonly=true][name='Name *']",
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setContactName),
+            value: FactoryUpdate.contactName
+          }),
+        m("label.form-label[for='contact-phone-num']", 'Phone Number *'),
+        m("input#contact-phone-num.factory-profile-value.contact-value.form-control-plaintext[type=text][readonly=true][name='Phone Number *']",
+          {
+            oninput: m.withAttr("value", FactoryUpdate.setContactPhoneNumber),
+            value: FactoryUpdate.contactPhoneNumber
+          }),
+        m("label.form-label[for='contact-lang-code']", 'Language *'),
+        m("select#contact-lang-code.factory-profile-value.contact-value.select-language.form-control-plaintext[disabled='disabled'][readonly=true][name='Language *']", {
           name,
-          oninput: m.withAttr("value",  FactoryUpdate.setContactLanguageCode),
+          oninput: m.withAttr("value", FactoryUpdate.setContactLanguageCode),
           value: FactoryUpdate.contactLanguageCode,
-        }, isoLangCodes.map(({code, name}) => m('option', {value: code, text: name}))),
+        }, isoLangCodes.map(({ code, name }) => m('option', { value: code, text: name }))),
 
         m('.row', [
           m("button.btn.btn-contact.updateInformation.m-2.hide",
@@ -212,10 +227,10 @@ const FactoryDetails = {
               },
               disabled: FactoryUpdate.submitting || FactoryUpdate.invalidFields(),
             }, "Update Contact Info"),
-          m('btn.btn.btn-contact.cancelUpdate.m-2.hide', { onclick:() => _toggleEditContact(vnode) }, 'Cancel')
+          m('btn.btn.btn-contact.cancelUpdate.m-2.hide', { onclick: () => _toggleEditContact(vnode) }, 'Cancel')
         ]),
         m(modals.ModalContainer, { show: modals.displayModal() }),
-    ]
+      ]
     } else {
       return [m('.row', "Loading...")]
     }
@@ -230,7 +245,7 @@ const FactoryDetails = {
   },
   oninit: (vnode) => {
     vnode.state.loading = true
-    return authService.getUserData()
+    return AuthService.getUserData()
       .then((user) => Promise.all([
         user,
         agentService.fetchAgent(user.public_key)
@@ -258,19 +273,19 @@ const FactoryDetails = {
   },
   loadData: (vnode) => {
     factoryService.fetchFactory(vnode.state.factory.id)
-    .then((factoryResult) => {
-      vnode.state.loading = false
-      vnode.state.factory = factoryResult.data
-      FactoryUpdate.setFactory(vnode.state.factory)
-      m.redraw()
-  })
-  .catch((e) => {
-    console.log(e)
-    // sign-up or -in required
-    vnode.state.loading = false
-    vnode.state.user = null
-    m.redraw()
-  })
+      .then((factoryResult) => {
+        vnode.state.loading = false
+        vnode.state.factory = factoryResult.data
+        FactoryUpdate.setFactory(vnode.state.factory)
+        m.redraw()
+      })
+      .catch((e) => {
+        console.log(e)
+        // sign-up or -in required
+        vnode.state.loading = false
+        vnode.state.user = null
+        m.redraw()
+      })
   }
 
 }
@@ -318,7 +333,7 @@ const FactorySignUp = {
 
   submit: () => {
     FactorySignUp.submitting = true
-    authService.createUser(FactorySignUp,
+    AuthService.createUser(FactorySignUp,
       (signer) =>
         transactionService.submitBatch([
           agentService.createAgentTransaction(FactorySignUp.agentName, signer),
@@ -471,7 +486,7 @@ const FactoryUpdate = {
 
   submit: () => {
     FactoryUpdate.submitting = true
-    authService.getSigner()
+    AuthService.getSigner()
       .then((signer) => factoryService.updateFactory(FactoryUpdate, signer))
       .then(() => {
         FactoryUpdate.submitting = false
@@ -529,9 +544,9 @@ const PasswordUpdate = {
 
   submit: () => {
     PasswordUpdate.submitting = true
-    authService.getSigner()
+    AuthService.getSigner()
       .then((signer) => {
-        authService.updateUser(PasswordUpdate, signer)
+        AuthService.updateUser(PasswordUpdate, signer)
       })
       .then(() => {
         PasswordUpdate.submitting = false

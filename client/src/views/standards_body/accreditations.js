@@ -1,7 +1,7 @@
 'use strict'
 
 const m = require('mithril')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const accreditCertifyingBodyService = require('App/services/accreditation')
 const agentService = require('App/services/agent')
 const organizationService = require('App/services/organization')
@@ -60,7 +60,7 @@ var AccreditCertifyingBodyData = {
 
     submit: (certifyingBodyId, standardsBodyId) => {
         AccreditCertifyingBodyData.submitting = true
-        return authService.getSigner()
+        return AuthService.getSigner()
             .then((signer) =>
                 accreditCertifyingBodyService.accreditCertifyingBody(
                     AccreditCertifyingBodyData,
@@ -91,7 +91,7 @@ var AccreditCertifyingBody = {
         vnode.state.standards = null
 
 
-        return authService.getUserData()
+        return AuthService.getUserData()
             .then((user) => Promise.all([
                 agentService.fetchAgent(user.public_key),
                 organizationService.fetchOrganization(m.route.param("organization_id")),

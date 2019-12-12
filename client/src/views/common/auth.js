@@ -2,13 +2,13 @@
 
 const m = require('mithril')
 const { inputField } = require('App/components/forms')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const agentService = require('App/services/agent')
 
 
 const AuthedComponent = {
   view(vnode) {
-    if (authService.isSignedIn()) {
+    if (AuthService.isSignedIn()) {
       return vnode.children
     } else {
       return []
@@ -40,7 +40,7 @@ const SignIn = {
 
   submit: () => {
     SignIn.submitting = true
-    authService.authenticate(SignIn.username, SignIn.password)
+    AuthService.authenticate(SignIn.username, SignIn.password)
       .then(() => {
         SignIn.clear()
         m.route.set('/')
@@ -111,7 +111,7 @@ const AgentSignUp = {
 
   submit: () => {
     AgentSignUp.submitting = true
-    authService.createUser(AgentSignUp, (signer) => agentService.createAgent(AgentSignUp.name, signer))
+    AuthService.createUser(AgentSignUp, (signer) => agentService.createAgent(AgentSignUp.name, signer))
       .then(() => {
         AgentSignUp.clear()
         m.route.set('/')

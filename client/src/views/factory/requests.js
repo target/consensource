@@ -1,7 +1,7 @@
 'use strict'
 
 const m = require('mithril')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const blockService = require('App/services/block')
 const certRequestService = require('App/services/certificate_request')
 const standardService = require('App/services/standards')
@@ -45,7 +45,7 @@ var CertificateRequest = {
   submit: () => {
     CertificateRequest.submitting = true
     CertificateRequest.requestDate = (new Date()).getTime() / 1000
-    return authService.getSigner()
+    return AuthService.getSigner()
       .then((signer) => certRequestService.openCertificateRequest(CertificateRequest, signer))
       .then(() => {
         CertificateRequest.clear()
@@ -62,7 +62,7 @@ var CertificateRequest = {
     CertificateRequest.closing = true
     CertificateRequest.requestId = requestId
     CertificateRequest.status = RequestProto.Status.CLOSED
-    return authService.getSigner()
+    return AuthService.getSigner()
       .then((signer) => certRequestService.changeCertificateRequest(CertificateRequest, signer))
       .then(() => {
         CertificateRequest.clear()
@@ -79,7 +79,7 @@ var CertificateRequest = {
     CertificateRequest.inProgress = true
     CertificateRequest.requestId = requestId
     CertificateRequest.status = RequestProto.Status.IN_PROGRESS
-    return authService.getSigner()
+    return AuthService.getSigner()
       .then((signer) => certRequestService.changeCertificateRequest(CertificateRequest, signer))
       .then(() => {
         CertificateRequest.clear()
@@ -256,7 +256,7 @@ const ListCertifications = {
   _viewName: 'Certifications',
   oninit: (vnode) => {
       vnode.state.certRequests = null;
-      authService.getUserData()
+      AuthService.getUserData()
         .then((user) => Promise.all([
           user,
           agentService.fetchAgent(user.public_key)

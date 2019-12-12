@@ -1,7 +1,7 @@
 'use strict'
 
 const m = require('mithril')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const certificateService = require('App/services/certificate')
 const agentService = require('App/services/agent')
 const requestService = require('../../services/requests')
@@ -51,7 +51,7 @@ var IssueCertificateData = {
 
     submit: (organizationId, factoryId) => {
         IssueCertificateData.submitting = true
-        return authService.getSigner()
+        return AuthService.getSigner()
             .then((signer) =>
               certificateService.issueCertificate(
                   IssueCertificateData,
@@ -80,7 +80,7 @@ var CertificateCreate = {
       vnode.state.agent = null
       vnode.state.request = null
 
-      return authService.getUserData()
+      return AuthService.getUserData()
         .then((user) => Promise.all([
           agentService.fetchAgent(user.public_key),
           requestService.fetchRequest(m.route.param("request_id"), { expand: true })

@@ -9,9 +9,9 @@ const { CreateCertifyingBody } = require('App/views/auditor/organization')
 const { FactoryList } = require('App/views/auditor/factory')
 const { RequestList } = require('App/views/auditor/requests')
 const { CertificateCreate, CertificateList } = require('App/views/auditor/certificates')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 
-authService.namespace = 'auditor'
+AuthService.namespace = 'auditor'
 
 let element = document.getElementById("app")
 m.route(element, '/', {

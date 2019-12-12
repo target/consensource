@@ -1,7 +1,7 @@
 'use strict'
 
 const m = require('mithril')
-const authService = require('App/services/auth')
+const AuthService = require('App/services/auth')
 const standardsService = require('App/services/standards')
 const agentService = require('App/services/agent')
 var DatePicker = require('mithril-datepicker')
@@ -55,7 +55,7 @@ var StandardPayloadData = {
 
     submitCreateStandard: (organizationId) => {
         StandardPayloadData.submitting = true
-        return authService.getSigner()
+        return AuthService.getSigner()
             .then((signer) =>
               standardsService.createStandard(
                   StandardPayloadData,
@@ -74,7 +74,7 @@ var StandardPayloadData = {
     },
     submitUpdateStandard: (organizationId) => {
         StandardPayloadData.submitting = true
-        return authService.getSigner()
+        return AuthService.getSigner()
             .then((signer) =>
               standardsService.updateStandard(
                   StandardPayloadData,
@@ -101,7 +101,7 @@ var StandardCreate = {
       vnode.state.loading = true
       vnode.state.agent = null
 
-      return authService.getUserData()
+      return AuthService.getUserData()
         .then((user) => Promise.all([
           agentService.fetchAgent(user.public_key),
         ])
@@ -171,7 +171,7 @@ var StandardUpdate = {
         StandardPayloadData.clear()
         vnode.state.loading = true
         vnode.state.agent = null
-        return authService.getUserData()
+        return AuthService.getUserData()
           .then((user) => Promise.all([
             agentService.fetchAgent(user.public_key)])
           .then(([agent]) => {
@@ -281,7 +281,7 @@ var StandardList =  {
     },
 
     oncreate: (vnode) => {
-        authService.getUserData()
+        AuthService.getUserData()
           .then((user) => Promise.all([
           agentService.fetchAgent(user.public_key)])
         .then(([agent]) => {
