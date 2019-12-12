@@ -1,7 +1,12 @@
-FROM target/consensource:rust-nightly
+FROM target/consensource:rust-base-1.38-nightly
 
-COPY . .
+COPY protos /protos
+COPY common /common
+RUN cd /common \
+    && cargo build
+
+COPY processor /processor
 WORKDIR processor
-RUN cargo update
-RUN cargo +nightly build
+RUN cargo build
+
 ENV PATH=$PATH:/processor/target/debug/

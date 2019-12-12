@@ -5,7 +5,6 @@ volumes:
 
 services:
   cli:
-    image: target/consensource:cli
     container_name: consensource-cli
     build:
       context: .
@@ -90,7 +89,6 @@ services:
     entrypoint: sawtooth-rest-api -v -C tcp://validator:4004 --bind sawtooth-rest-api:8008
 
   rest-api:
-    image: target/consensource:rest-api
     container_name: consensource-rest-api
     build:
       context: .
@@ -115,7 +113,6 @@ services:
     entrypoint: settings-tp -v -C tcp://validator:4004
 
   processor:
-    image: target/consensource:processor
     container_name: consensource-processor
     build:
       context: .
@@ -148,7 +145,6 @@ services:
       - "8081:8080"
 
   state-delta-subscriber:
-    image: target/consensource:state-delta-subscriber
     container_name: consensource-state-delta-sub
     build:
       context: .
