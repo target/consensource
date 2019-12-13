@@ -43,6 +43,6 @@ services:
           echo Waiting for Postgres server, $$((RETRIES--)) remaining attempts...
           sleep 1
         done
-
-        consensource-rest-api -v --dbhost test-postgres -C tcp://validator:4004   
+        
+        cargo test
       "
