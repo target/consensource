@@ -81,7 +81,7 @@ service in the `docker-compose.yaml` file in the `rest-api` service under `envir
 
 ## Further information
 
-For further information on ConsenSource, including more details of the components, glossary and FAQs are available in the [ConsenSource Docs](https://pages.github.com/target/ConsenSource/)
+For further information on ConsenSource, including more details of the components, glossary and FAQs are available in the [ConsenSource Docs](https://target.github.io/consensource-docs/)
 
 ## Maintainers
 
