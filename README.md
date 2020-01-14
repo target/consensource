@@ -1,3 +1,5 @@
+_This mono repository is inactive. ConsenSource has been split into component repos. You can view the components [here](https://github.com/search?q=topic%3Aconsensource+org%3Atarget&type=Repositories)._
+
 # ConsenSource &middot; [![Build Status](https://travis-ci.org/target/consensource.svg?branch=master)](https://travis-ci.org/target/consensource)
 
 ConsenSource is a blockchain application to help verify that products are sourced sustainably from certified factories. Specifically, this application serves as a common platform to verify and display supplier certifications and audit data between standards bodies, certification bodies, and factories. This application runs on Hyperledger Sawtooth, an enterprise blockchain platform.
