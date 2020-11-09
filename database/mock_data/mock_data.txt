@@ -1,1 +1,0 @@
-Add mock-data in whatever format you need. You'll need to setup an ingestion script via the rest api.

@@ -1,7 +1,0 @@
-name: cert_registry
-version: '0.1'
-wasm: processor/target/wasm32-unknown-unknown/release/cert_registry.wasm
-inputs:
-  - '439a56'
-outputs:
-  - '439a56'
