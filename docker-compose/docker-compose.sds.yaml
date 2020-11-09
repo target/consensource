@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  sds:
+    image: target/consensource-sds:local
+    build:
+      context: sds

@@ -1,0 +1,27 @@
+[submodule "docker-compose/consensource-processor"]
+	path = docker-compose/consensource-processor
+	url = https://github.com/target/consensource-processor
+[submodule "docker-compose/--name"]
+	path = docker-compose/--name
+	url = https://github.com/target/consensource-processor
+[submodule "docker-compose/processor"]
+	path = docker-compose/processor
+	url = https://github.com/target/consensource-processor
+[submodule "docker-compose/sds"]
+	path = docker-compose/sds
+	url = https://github.com/target/consensource-sds
+[submodule "docker-compose/cli"]
+	path = docker-compose/cli
+	url = https://github.com/target/consensource-cli
+[submodule "docker-compose/api"]
+	path = docker-compose/api
+	url = https://github.com/target/consensource-api
+[submodule "docker-compose/ui"]
+	path = docker-compose/ui
+	url = https://github.com/target/consensource-ui
+[submodule "docker-compose/common"]
+	path = docker-compose/common
+	url = https://github.com/target/consensource-common
+[submodule "docker-compose/database"]
+	path = docker-compose/database
+	url = https://github.com/target/consensource-database
