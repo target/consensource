@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: validator
+  name: validator
+spec:
+  ports:
+    - name: component
+      protocol: TCP
+      port: 4004
+      targetPort: 4004
+    - name: sawtooth-rest-api
+      protocol: TCP
+      port: 8008
+      targetPort: 8008
+    - name: consensus
+      protocol: TCP
+      port: 5050
+      targetPort: 5050
+  selector:
+    app: validator

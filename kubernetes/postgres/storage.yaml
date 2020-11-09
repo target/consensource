@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-data-pv
+  labels:
+    type: local
+spec:
+  storageClassName: generic
+  capacity: 
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/var/lib/postgresql/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-data-pvc
+spec:
+  storageClassName: generic
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi

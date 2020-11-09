@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: target/consensource-api:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 500Mi
+          ports:
+            - name: api
+              containerPort: 9009
+            - name: block-stream
+              containerPort: 9010
+            - name: validator
+              containerPort: 4004
+            - name: postgres
+              containerPort: 5432
+          command:
+            - bash
+          args:
+            - -c
+            - "consensource-rest-api -vv \
+              --dbhost $POSTGRES_HOST --dbuser $POSTGRES_USER \
+              --dbname $POSTGRES_DB --dbpass $POSTGRES_PASSWORD \
+              -C tcp://validator:4004"
+          env:
+            # Rocket configuration
+            - name: ROCKET_ADDRESS
+              value: "0.0.0.0"
+            - name: ROCKET_PORT
+              value: "9009"
+            # Database credentials
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: CONSENSOURCEDB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: CONSENSOURCEDB_USER
+            - name: POSTGRES_HOST
+              value: postgresdb-service
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: CONSENSOURCEDB_PASSWORD

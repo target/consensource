@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: api
+  name: api
+spec:
+  ports:
+    - name: rest-api
+      protocol: TCP
+      port: 9009
+      targetPort: 9009
+    - name: validator
+      protocol: TCP
+      port: 4004
+      targetPort: 4004
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+     app: api
