@@ -1,89 +1,72 @@
-_This mono repository is inactive. ConsenSource has been split into component repos. You can view the components [here](https://github.com/search?q=topic%3Aconsensource+org%3Atarget&type=Repositories)._
+<p align="center">
+  <h1 align="center">ConsenSource</h3>
+</p>
 
-# ConsenSource &middot; [![Build Status](https://travis-ci.org/target/consensource.svg?branch=master)](https://travis-ci.org/target/consensource)
+[![Build Status](https://travis-ci.org/target/consensource.svg?branch=master)](https://travis-ci.org/target/consensource)
 
-ConsenSource is a blockchain application to help verify that products are sourced sustainably from certified factories. Specifically, this application serves as a common platform to verify and display supplier certifications and audit data between standards bodies, certification bodies, and factories. This application runs on Hyperledger Sawtooth, an enterprise blockchain platform.
+ConsenSource is a blockchain platform for verifying sustainability-certified suppliers. This application also serves as a transparent platform for displaying industry certifications and audit data between parties (certificate accrediting groups, certificate issuers, suppliers, etc.).
 
-## Usage
+ConsenSource runs on [Hyperledger Sawtooth](https://github.com/hyperledger/sawtooth-core), an enterprise blockchain solution.
 
-The ConsenSource repository includes several components:
+1. [Overview](#overview)
 
-- A transaction processor to handle the certification registry's transaction logic
+2. [Docker Images](#docker-images)
 
-- A custom REST API that provides endpoints for accessing blockchain data, user information, and state data
+3. [Running ConsenSource](#running-consensource)
 
-- An event subscriber that listens to blockchain events in order to parse this data to store this data in an off-chain reporting database
+4. [Documentation](#documentation)
 
-- Multiple client web apps to give a sample of the interactions each entity may have with the ConsenSource application, including standards bodies, certification bodies, factories and retailers
+5. [Contributing](#contributing)
 
-- A command line interface with basic initial commands to create state objects, including agents, organizations, certificates, standards and accreditations
+6. [Maintainers](#maintainers)
 
-The application runs using separate Docker containers for the various components. These Docker images may be run together using the `docker-compose.yaml` file included within the repository.
+## Overview
 
-To run the ConsenSource application, run the following command in the project's root directory:
+ConsenSource consists of several components
 
-`docker-compose -f docker-compose.yaml up`
+- [consensource-api](github.com/target/consensource-api) - A REST API that provides endpoints for accessing blockchain data, user information, and state data.
 
-Instructions on how to build, run and develop the web client can be found in the [README](https://github.com/target/ConsenSource/blob/master/client/README.md) in the client sub-directory.
+- [consensource-processor](github.com/target/consensource-processor) - A transaction processor for handling ConsenSource transaction logic.
 
-Each client application provides functionality depending on the entity, based on their unique interactions with the common platform. The following section provides the default URL for each client application and their associated functionality:
+- [consensource-sds](github.com/target/consensource-sds) - An event subscriber that listens to blockchain events in order to parse incoming data to be stored in an off-chain reporting database.
 
-- Retailer Client: http://localhost:8080/
+- [consensource-cli](github.com/target/consensource-cli) - A command line interface for creating ConsenSource blockchain transactions including agents, organizations, certificates, standards and accreditations.
 
-  - Serves as an example to information available to Target sourcing members
-  - View factories and their associated contact, location, and certification information
-  - View agents and, if applicable, associated organization and contact information
+- [consensource-database](github.com/target/consensource-cli) - A database library for handling off-chain storage.
 
-- Factory Client: http://localhost:8080/index_factory.html
+- [consensource-common](github.com/target/consensource-common) - A common repo for housing custom Rust libraries, protobuf definitions, and Dockerfiles.
 
-  - Open certification requests
-  - View history of granted certifications
-  - Update any address or contact information
+- [consensource-ui](github.com/target/consensource-ui) - Multiple user interfaces for each entity (standards bodies, certification bodies, suppliers and retailers) to interact with the ConsenSource blockchain.
 
-- Standards Body Client: http://localhost:8080/index_standards_body.html
+## Docker Images
 
-  - View, create, and update standards
-  - Accredit certifying bodies to issue certificates
+We provide Docker images for each of the components (described above) for running and deploying on your preferred container orchestration platform.
 
-- Certifying Body Client: http://localhost:8080/index_auditor.html
-  - View factories' certification requests
-  - Issue certifications based on these requests
-  - View all factories
+[target/consensource-api](https://hub.docker.com/repository/docker/target/consensource-api) - Rust v1.44 nightly image, consensource-api binary
 
-Other available endpoints include:
+[target/consensource-processor](https://hub.docker.com/repository/docker/target/consensource-processor) - Rust v1.44 stable image, consensource-processor binary
 
-- PostgreSQL Adminer: http://localhost:8081
-  - Login credentials:
-    - System: PostgreSQL
-    - Server: postgres:5432
-    - Username: cert-registry
-    - Password: cert-registry
-    - Database: cert-registry
+[target/consensource-sds](https://hub.docker.com/repository/docker/target/consensource-sds) - Rust v1.44 stable image, consensource-sds binary
 
-Refer to the [REST API specification document](https://github.com/target/ConsenSource/blob/master/docs_content/rest-api/specs.yaml) for further information on available endpoints
+[target/consensource-cli](https://hub.docker.com/repository/docker/target/consensource-cli) - Rust latest stable image, consensource-cli binary
 
-## Testing
+_Note: we manage our own Rust base image in the [target/consensource-common repo](https://github.com/target/consensource-common/tree/master/docker)_
 
-Docker based integration tests are available for the application. In order to execute the tests, run the following command in the project's root directory:
+## Running ConsenSource
 
-`./bin/run-tests`
+We provide two examples for running ConsenSource locally.
 
-This will build and run each test suite in the `integration_tests` directory. In order to run a specific test suite, pass the name of the integration tests directory as an argument to the script. For example, to run only the processor tests, run the following command:
+1. [docker-compose](docker-compose/README.md)
 
-`./bin/run-tests processor`
+1. [kubernetes](kubernetes/README.md)
 
-The script also provides a `--no-build` option, which tells the script not to rebuild the images or recompile the component code before running the tests. This can be useful to save time when writing new tests if no changes have been made to the component. For example, to run the processor tests without recompiling code or rebuilding images, run the following command:
+## Documentation
 
-`./bin/run-tests --no-build processor`
+For more info on specific components, glossary and FAQs, please [visit the ConsenSource docs](https://target.github.io/consensource-docs/).
 
-## Identity Provider Integration
+## Contributing
 
-The REST API allows for integration with an OAuth 2.0/OpenID Connect setup. Specify the url of the OAuth
-service in the `docker-compose.yaml` file in the `rest-api` service under `environment` variables to use.
-
-## Further information
-
-For further information on ConsenSource, including more details of the components, glossary and FAQs are available in the [ConsenSource Docs](https://target.github.io/consensource-docs/)
+Please do! Check [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for info.
 
 ## Maintainers
 
