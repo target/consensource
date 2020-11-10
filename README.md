@@ -24,19 +24,19 @@ ConsenSource runs on [Hyperledger Sawtooth](https://github.com/hyperledger/sawto
 
 ConsenSource consists of several components
 
-- [consensource-api](github.com/target/consensource-api) - A REST API that provides endpoints for accessing blockchain data, user information, and state data.
+- [consensource-api](https://github.com/target/consensource-api) - A REST API that provides endpoints for accessing blockchain data, user information, and state data.
 
-- [consensource-processor](github.com/target/consensource-processor) - A transaction processor for handling ConsenSource transaction logic.
+- [consensource-processor](https://github.com/target/consensource-processor) - A transaction processor for handling ConsenSource transaction logic.
 
-- [consensource-sds](github.com/target/consensource-sds) - An event subscriber that listens to blockchain events in order to parse incoming data to be stored in an off-chain reporting database.
+- [consensource-sds](https://github.com/target/consensource-sds) - An event subscriber that listens to blockchain events in order to parse incoming data to be stored in an off-chain reporting database.
 
-- [consensource-cli](github.com/target/consensource-cli) - A command line interface for creating ConsenSource blockchain transactions including agents, organizations, certificates, standards and accreditations.
+- [consensource-cli](https://github.com/target/consensource-cli) - A command line interface for creating ConsenSource blockchain transactions including agents, organizations, certificates, standards and accreditations.
 
-- [consensource-database](github.com/target/consensource-cli) - A database library for handling off-chain storage.
+- [consensource-database](https://github.com/target/consensource-cli) - A database library for handling off-chain storage.
 
-- [consensource-common](github.com/target/consensource-common) - A common repo for housing custom Rust libraries, protobuf definitions, and Dockerfiles.
+- [consensource-common](https://github.com/target/consensource-common) - A common repo for housing custom Rust libraries, protobuf definitions, and Dockerfiles.
 
-- [consensource-ui](github.com/target/consensource-ui) - Multiple user interfaces for each entity (standards bodies, certification bodies, suppliers and retailers) to interact with the ConsenSource blockchain.
+- [consensource-ui](https://github.com/target/consensource-ui) - Multiple user interfaces for each entity (standards bodies, certification bodies, suppliers and retailers) to interact with the ConsenSource blockchain.
 
 ## Docker Images
 
