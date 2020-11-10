@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sds
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: sds
+  template:
+    metadata:
+      labels:
+        app: sds
+    spec:
+      containers:
+        - name: sds
+          image: target/consensource-sds:latest
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 250m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 500Mi
+          ports:
+            - name: tcp
+              containerPort: 4004
+            - name: postgres-tcp
+              containerPort: 5432
+          command:
+            - bash
+          args:
+            - -c
+            - "consensource-sds \
+              --dbhost $POSTGRES_HOST --dbuser $POSTGRES_USER \
+              --dbname $POSTGRES_DB --dbpass $POSTGRES_PASSWORD \
+              --dbport 5432 -v -C tcp://validator:4004"
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: CONSENSOURCEDB_NAME
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: CONSENSOURCEDB_USER
+            - name: POSTGRES_HOST
+              value: postgresdb-service
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres
+                  key: CONSENSOURCEDB_PASSWORD

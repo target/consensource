@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: validator
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: validator
+  template:
+    metadata:
+      labels:
+        app: validator
+    spec:
+      containers:
+        # Validator
+        - name: validator
+          image: hyperledger/sawtooth-validator:chime
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 8Gi
+            requests:
+              cpu: 250m
+              memory: 2Gi
+          ports:
+            - name: component
+              containerPort: 4004
+            - name: validator
+              containerPort: 8800
+            - name: consensus
+              containerPort: 5050
+          command:
+            - bash
+          args:
+            - -c
+            - |
+              sawadm keygen &&
+              sawtooth keygen my_key &&
+              sawset genesis -k /root/.sawtooth/keys/my_key.priv &&
+              sawset proposal create \
+              -k /root/.sawtooth/keys/my_key.priv \
+              sawtooth.consensus.algorithm.name=Devmode \
+              sawtooth.consensus.algorithm.version=0.1 \
+              -o config.batch &&
+              if [ ! -s /var/lib/sawtooth/backup/backupdata ]; then
+                sawadm genesis config-genesis.batch config.batch;
+              else
+                sawadm blockstore restore /var/lib/sawtooth/backup/backupdata
+              fi &&
+              sawtooth-validator -vv \
+              --endpoint tcp://0.0.0.0:8800 \
+              --bind component:tcp://0.0.0.0:4004 \
+              --bind network:tcp://0.0.0.0:8800 \
+              --bind consensus:tcp://0.0.0.0:5050
+
+        # Consensus Engine
+        - name: sawtooth-devmode-engine
+          image: hyperledger/sawtooth-devmode-engine-rust:chime
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 1Gi
+            requests:
+              cpu: 50m
+              memory: 500Mi
+          ports:
+            - name: validator
+              containerPort: 5050
+          command:
+            - bash
+          args:
+            - -c
+            - "devmode-engine-rust -C tcp://$HOSTNAME:5050"
+
+        # Settings-TP
+        - name: settings-tp
+          image: hyperledger/sawtooth-settings-tp:chime
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              memory: 250Mi
+          ports:
+            - name: validator
+              containerPort: 4004
+          command:
+            - bash
+          args:
+            - -c
+            - "settings-tp -v -C tcp://$HOSTNAME:4004"
+
+        # Sawtooth REST API
+        - name: sawtooth-rest-api
+          image: hyperledger/sawtooth-rest-api:chime
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              memory: 250Mi
+          ports:
+            - name: http
+              containerPort: 8008
+            - name: validator
+              containerPort: 4004
+          command:
+            - bash
+          args:
+            - -c
+            - "sawtooth-rest-api -v -C tcp://$HOSTNAME:4004 --bind 0.0.0.0:8008"

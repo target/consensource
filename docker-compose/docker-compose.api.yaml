@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  api:
+    image: target/consensource-api:local
+    build:
+      context: api

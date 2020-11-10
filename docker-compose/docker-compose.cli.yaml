@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  cli:
+    image: target/consensource-cli:local
+    build:
+      context: cli

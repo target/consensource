@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processor
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: processor
+  template:
+    metadata:
+      labels:
+        app: processor
+    spec:
+      containers:
+      - name: processor
+        image: target/consensource-processor:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 250m
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+        ports:
+          - name: tcp
+            containerPort: 4004
+        command:
+          - bash
+        args:
+          - -c
+          - "consensource-processor -v \
+            -C tcp://validator:4004"
