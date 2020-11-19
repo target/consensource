@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: sds
-          image: target/consensource-sds:latest
-          imagePullPolicy: Always
+          image: target/consensource-sds
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 250m

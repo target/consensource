@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
       - name: processor
-        image: target/consensource-processor:latest
-        imagePullPolicy: Always
+        image: target/consensource-processor
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             cpu: 250m

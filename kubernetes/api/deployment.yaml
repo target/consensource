@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: api
-          image: target/consensource-api:latest
-          imagePullPolicy: Always
+          image: target/consensource-api
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 250m
