@@ -17,6 +17,7 @@ spec:
       containers:
         - name: postgres-db
           image: target/consensource-db:postgres-12.4
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           volumeMounts:
