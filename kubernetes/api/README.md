@@ -21,7 +21,7 @@ But before we can have a working ingress resource, we first need to install and 
 Run the following in the `api/` directory.
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml --force
 ```
 
 **Deploy Ingress**
