@@ -6,7 +6,13 @@ This repo provides instructions on how to deploy ConsenSource to a locally runni
 
 ### Installation
 
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac (the version below or a later version)
+   ```
+   Docker 2.5.01 (49550)
+   Channel: stable
+   Engine: 19.03.13
+   Kubernetes: v1.19.3
+   ```
 2. Clone this repository
 
 ### Enable Kuberentes on Docker Desktop
