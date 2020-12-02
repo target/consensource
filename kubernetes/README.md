@@ -28,7 +28,7 @@ Run the following commands in the root directory of this repo.
 First, deploy the validator:
 
 ```
-kubetcl apply -f validator/
+kubectl apply -f validator/
 ```
 
 Before deploying other components, wait until the validator pod's status says `RUNNING`. To check pods' statuses, run:
@@ -46,8 +46,8 @@ Second, deploy the Postgres database. Follow [this README's](postgres/README.md)
 Third, deploy the SDS and processor components.
 
 ```
-kubetcl apply -f sds/
-kubetcl apply -f processor/
+kubectl apply -f sds/
+kubectl apply -f processor/
 ```
 
 ### 4. API
