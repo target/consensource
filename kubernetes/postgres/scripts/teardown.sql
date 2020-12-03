@@ -14,12 +14,6 @@ delete from standard_versions;
 delete from standards;
 delete from users;
 
--- drop roles
-drop type Role cascade;
-drop type OrganizationType;
-drop type RequestStatus;
-drop type AssertionType;
-
 -- drop all tables
 drop table if exists accreditations;
 drop table if exists addresses;
@@ -35,3 +29,9 @@ drop table if exists requests;
 drop table if exists standard_versions;
 drop table if exists standards;
 drop table if exists users;
+
+-- drop roles
+drop type Role cascade;
+drop type OrganizationType;
+drop type RequestStatus;
+drop type AssertionType;
