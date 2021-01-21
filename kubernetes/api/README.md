@@ -7,7 +7,7 @@ To deploy the API locally, we need to create the Kubernetes deployment and servi
 Run the following command in the `api/` directory.
 
 ```
-kubectl apply -f deployment.yaml -f service.yaml -f block-stream.yaml
+$ kubectl apply -f deployment.yaml -f service.yaml -f block-stream.yaml
 ```
 
 ### Create Ingress and Ingress Controller
@@ -22,6 +22,7 @@ Run the following in the `api/` directory.
 
 ```
 $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.40.2/deploy/static/provider/cloud/deploy.yaml --force
+
 $ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 ```
 
@@ -30,7 +31,7 @@ $ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 Run the following in the `api/` directory.
 
 ```
-kubectl apply -f ingress.yaml
+$ kubectl apply -f ingress.yaml
 ```
 
 ### Test Deployment
