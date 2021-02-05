@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: standards-body-cli
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: standards-body-cli
+  template:
+    metadata:
+      labels:
+        app: standards-body-cli
+    spec:
+      containers:
+        - name: standards-body-cli
+          image: target/consensource-cli
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 50m
+              memory: 100Mi
+            requests:
+              cpu: 20m
+              memory: 50Mi
+          command:
+            - bash
+          args:
+            - -c
+            - |
+              tail -f /dev/null
+          volumeMounts:
+            - name: consensource-keys
+              mountPath: "/root/.sawtooth"
+              readOnly: true
+      volumes:
+        - name: consensource-keys
+          secret:
+            secretName: standards-body-cli
+            items:
+              - key: sawtooth-pub-key
+                path: keys/root.pub
+              - key: sawtooth-priv-key
+                path: keys/root.priv
