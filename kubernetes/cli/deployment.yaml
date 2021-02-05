@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: cli
-          image: target/consensource-cli:latest
-          imagePullPolicy: Always
+          image: target/consensource-cli
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 50m
@@ -30,3 +30,16 @@ spec:
             - -c
             - |
               tail -f /dev/null
+          volumeMounts:
+            - name: consensource-keys
+              mountPath: "/root/.sawtooth"
+              readOnly: true
+      volumes:
+        - name: consensource-keys
+          secret:
+            secretName: cli
+            items:
+              - key: sawtooth-pub-key
+                path: keys/root.pub
+              - key: sawtooth-priv-key
+                path: keys/root.priv
