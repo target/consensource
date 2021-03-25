@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: api
 spec:
-  replicas: 1
+  replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -37,7 +37,7 @@ spec:
             - bash
           args:
             - -c
-            - "consensource-rest-api -vv \
+            - "consensource-rest-api -v \
               --dbhost $POSTGRES_HOST --dbuser $POSTGRES_USER \
               --dbname $POSTGRES_DB --dbpass $POSTGRES_PASSWORD \
               -C tcp://validator:4004"
